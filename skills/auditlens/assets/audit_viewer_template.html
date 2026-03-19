@@ -3,747 +3,565 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Compliance Audit Workspace</title>
+<title>AuditLens Workspace</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
 
   :root {
-    --bg-primary: #0f1117;
-    --bg-secondary: #1a1d27;
-    --bg-tertiary: #242833;
-    --bg-hover: #2d3142;
-    --text-primary: #e8eaed;
-    --text-secondary: #9aa0b0;
-    --text-muted: #6b7280;
-    --border: #2d3142;
-    --accent-blue: #3b82f6;
-    --accent-green: #22c55e;
-    --accent-amber: #f59e0b;
-    --accent-red: #ef4444;
-    --accent-purple: #8b5cf6;
+    /* OKLCH Color System - Sophisticated & High-Contrast */
+    --brand-hue: 240;
+    --brand-chroma: 0.1;
+    
+    --bg-base: light-dark(oklch(98% 0.01 var(--brand-hue)), oklch(14% 0.02 var(--brand-hue)));
+    --bg-surface: light-dark(oklch(100% 0 0), oklch(18% 0.02 var(--brand-hue)));
+    --bg-elevated: light-dark(oklch(95% 0.01 var(--brand-hue)), oklch(22% 0.03 var(--brand-hue)));
+    --bg-hover: light-dark(oklch(92% 0.02 var(--brand-hue)), oklch(26% 0.04 var(--brand-hue)));
+    
+    --text-main: light-dark(oklch(20% 0.02 var(--brand-hue)), oklch(92% 0.01 var(--brand-hue)));
+    --text-dim: light-dark(oklch(45% 0.02 var(--brand-hue)), oklch(65% 0.02 var(--brand-hue)));
+    --text-muted: light-dark(oklch(60% 0.02 var(--brand-hue)), oklch(45% 0.02 var(--brand-hue)));
+    
+    --border-soft: light-dark(oklch(90% 0.02 var(--brand-hue)), oklch(25% 0.03 var(--brand-hue)));
+    --border-strong: light-dark(oklch(80% 0.04 var(--brand-hue)), oklch(35% 0.04 var(--brand-hue)));
+
+    --accent-blue: oklch(65% 0.2 250);
+    --accent-green: oklch(70% 0.18 145);
+    --accent-amber: oklch(75% 0.15 75);
+    --accent-red: oklch(60% 0.22 25);
+    --accent-purple: oklch(65% 0.18 290);
+    
+    --radius-sm: 6px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
+  html { color-scheme: light dark; }
+
   body {
-    font-family: 'IBM Plex Sans', -apple-system, sans-serif;
-    background: var(--bg-primary);
-    color: var(--text-primary);
+    font-family: 'Outfit', system-ui, sans-serif;
+    background: var(--bg-base);
+    color: var(--text-main);
     min-height: 100vh;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
   }
 
   .mono { font-family: 'IBM Plex Mono', monospace; }
 
+  /* Fluid Layout System */
+  .app-container {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    min-height: 100vh;
+  }
+
+  @media (max-width: 1024px) {
+    .app-container { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .sidebar.open { display: block; position: fixed; inset: 0; z-index: 50; width: 100%; height: 100%; border-right: none; }
+    .mobile-nav { display: flex; }
+    .main-content { margin-top: 60px; }
+  }
+
   .sidebar {
-    width: 320px;
-    background: var(--bg-secondary);
-    border-right: 1px solid var(--border);
+    background: var(--bg-surface);
+    border-right: 1px solid var(--border-soft);
     height: 100vh;
     overflow-y: auto;
-    position: fixed;
-    left: 0;
+    position: sticky;
     top: 0;
   }
 
   .main-content {
-    margin-left: 320px;
-    min-height: 100vh;
+    background: var(--bg-base);
+    padding: clamp(1rem, 5vw, 3rem);
   }
 
-  .control-item {
-    padding: 10px 16px;
-    border-bottom: 1px solid var(--border);
-    cursor: pointer;
-    transition: background 0.15s;
+  .mobile-nav {
+    display: none;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 60px;
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border-soft);
+    z-index: 40;
+    align-items: center;
+    padding: 0 1rem;
+    justify-content: space-between;
   }
-  .control-item:hover { background: var(--bg-hover); }
-  .control-item.active { background: var(--bg-tertiary); border-left: 3px solid var(--accent-blue); }
 
-  .status-badge {
+  /* Components: Refined Status Badges */
+  .badge {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
-    padding: 2px 8px;
-    border-radius: 4px;
+    padding: 2px 10px;
+    border-radius: 999px;
     font-size: 11px;
-    font-weight: 600;
+    font-weight: 700;
+    letter-spacing: 0.02em;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
   }
-  .status-evidenced { background: rgba(34,197,94,0.15); color: var(--accent-green); }
-  .status-weak { background: rgba(245,158,11,0.15); color: var(--accent-amber); }
-  .status-missing { background: rgba(239,68,68,0.15); color: var(--accent-red); }
-  .status-stale { background: rgba(139,92,246,0.15); color: var(--accent-purple); }
+  .st-evidenced { background: color-mix(in oklch, var(--accent-green), transparent 85%); color: var(--accent-green); }
+  .st-weak { background: color-mix(in oklch, var(--accent-amber), transparent 85%); color: var(--accent-amber); }
+  .st-missing { background: color-mix(in oklch, var(--accent-red), transparent 85%); color: var(--accent-red); }
+  .st-stale { background: color-mix(in oklch, var(--accent-purple), transparent 85%); color: var(--accent-purple); }
 
-  .evidence-card {
-    background: var(--bg-tertiary);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 16px;
-    margin-bottom: 12px;
-    transition: border-color 0.15s;
+  /* Interactive Elements */
+  .control-card {
+    padding: 1rem;
+    border-radius: var(--radius-md);
+    background: var(--bg-surface);
+    border: 1px solid var(--border-soft);
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    outline: none;
   }
-  .evidence-card:hover { border-color: var(--accent-blue); }
+  .control-card:hover { transform: translateY(-2px); border-color: var(--accent-blue); box-shadow: 0 8px 24px -12px color-mix(in oklch, var(--accent-blue), transparent 60%); }
+  .control-card:focus-visible { ring: 3px solid var(--accent-blue); ring-offset: 2px; }
+  .control-card.active { border-color: var(--accent-blue); background: var(--bg-elevated); }
 
-  .comment-box {
-    background: var(--bg-tertiary);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 10px 12px;
-    color: var(--text-primary);
+  /* Evidence List */
+  .evidence-item {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+    transition: border-color 0.2s;
+  }
+  .evidence-item:hover { border-color: var(--border-strong); }
+
+  /* Forms & Inputs */
+  .text-area {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
     width: 100%;
-    min-height: 80px;
-    resize: vertical;
-    font-family: inherit;
-    font-size: 13px;
+    min-height: 120px;
+    color: var(--text-main);
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
   }
-  .comment-box:focus { outline: none; border-color: var(--accent-blue); }
+  .text-area:focus { border-color: var(--accent-blue); }
 
-  .tab-button {
+  .btn-primary {
+    background: var(--accent-blue);
+    color: white;
     padding: 8px 20px;
-    border: none;
-    background: transparent;
-    color: var(--text-secondary);
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    transition: all 0.15s;
-  }
-  .tab-button.active { color: var(--accent-blue); border-bottom-color: var(--accent-blue); }
-  .tab-button:hover { color: var(--text-primary); }
-
-  .filter-chip {
-    padding: 4px 12px;
-    border-radius: 20px;
-    border: 1px solid var(--border);
-    background: transparent;
-    color: var(--text-secondary);
-    font-size: 12px;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .filter-chip.active { background: var(--accent-blue); color: white; border-color: var(--accent-blue); }
-  .filter-chip:hover { border-color: var(--text-secondary); }
-
-  .progress-bar {
-    height: 6px;
-    background: var(--bg-tertiary);
-    border-radius: 3px;
-    overflow: hidden;
-  }
-  .progress-fill {
-    height: 100%;
-    border-radius: 3px;
-    transition: width 0.5s ease;
-  }
-
-  .stat-card {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 20px;
-  }
-
-  .crosswalk-badge {
-    display: inline-block;
-    padding: 2px 6px;
-    border-radius: 3px;
-    font-size: 10px;
+    border-radius: var(--radius-sm);
     font-weight: 600;
-    margin: 2px;
-    letter-spacing: 0.03em;
+    font-size: 14px;
+    transition: opacity 0.2s;
   }
+  .btn-primary:hover { opacity: 0.9; }
 
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+  /* Visual Rhythm & Spacing */
+  .stack > * + * { margin-top: 1.5rem; }
+  .stack-sm > * + * { margin-top: 0.75rem; }
+
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
 </style>
 </head>
-<body>
+<body class="light-dark">
 
-<!-- Sidebar -->
-<div class="sidebar" id="sidebar">
-  <div class="p-4 border-b" style="border-color: var(--border);">
-    <h1 class="text-lg font-semibold">Audit Workspace</h1>
-    <p class="text-xs mt-1" style="color: var(--text-secondary);" id="framework-label">ISO 27001:2022</p>
-    <p class="text-xs mono" style="color: var(--text-muted);" id="scan-date">Scanned: --</p>
+<nav class="mobile-nav" id="mobile-header">
+  <div class="flex items-center gap-3">
+    <button id="menu-toggle" class="p-2" aria-label="Toggle Menu">
+      <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+    <span class="font-bold text-lg">AuditLens</span>
   </div>
+  <div class="badge st-evidenced" id="mobile-progress">0%</div>
+</nav>
 
-  <!-- Coverage summary -->
-  <div class="p-4 border-b" style="border-color: var(--border);">
-    <div class="flex justify-between text-xs mb-2">
-      <span style="color: var(--text-secondary);">Control Coverage</span>
-      <span class="font-semibold mono" id="coverage-pct">0%</span>
+<div class="app-container">
+  <!-- Sidebar Navigation -->
+  <aside class="sidebar" id="sidebar" role="navigation" aria-label="Controls Navigation">
+    <div class="p-6 border-b border-soft">
+      <h1 class="text-2xl font-bold tracking-tight mb-1">AuditLens</h1>
+      <p class="text-sm font-medium opacity-70" id="framework-label">Loading Framework...</p>
+      <p class="text-[10px] mono uppercase tracking-widest mt-4 opacity-50" id="scan-date">--</p>
     </div>
-    <div class="progress-bar">
-      <div class="progress-fill" id="coverage-bar" style="width: 0%; background: var(--accent-green);"></div>
+
+    <!-- Stats summary -->
+    <div class="p-6 border-b border-soft bg-elevated/30">
+      <div class="flex justify-between items-end mb-2">
+        <span class="text-xs font-semibold opacity-60">Control Coverage</span>
+        <span class="text-xl font-bold mono" id="coverage-pct">0%</span>
+      </div>
+      <div class="h-2 bg-soft rounded-full overflow-hidden">
+        <div class="h-full bg-[var(--accent-green)] transition-all duration-700" id="coverage-bar" style="width: 0%"></div>
+      </div>
+      <div class="flex justify-between mt-4 text-[10px] font-bold uppercase opacity-60">
+        <span id="stat-evidenced">0 OK</span>
+        <span id="stat-gaps">0 Gap</span>
+        <span id="stat-stale">0 Stale</span>
+      </div>
     </div>
-    <div class="flex gap-3 mt-3 text-xs" style="color: var(--text-secondary);">
-      <span id="stat-evidenced">0 evidenced</span>
-      <span id="stat-gaps">0 gaps</span>
-      <span id="stat-stale">0 stale</span>
+
+    <!-- Filters & Search -->
+    <div class="p-4 space-y-4">
+      <div class="flex flex-wrap gap-2">
+        <button class="badge cursor-pointer ring-1 ring-inset ring-soft opacity-50 [&.active]:opacity-100 [&.active]:ring-brand-blue" data-filter="all">All</button>
+        <button class="badge st-evidenced cursor-pointer opacity-50 [&.active]:opacity-100" data-filter="evidenced">Evidenced</button>
+        <button class="badge st-missing cursor-pointer opacity-50 [&.active]:opacity-100" data-filter="missing">Missing</button>
+      </div>
+      <input type="text" id="search-input" placeholder="Search controls..." 
+        class="w-full bg-elevated border border-soft rounded-lg px-4 py-2 text-sm focus:border-accent-blue outline-none">
     </div>
-  </div>
 
-  <!-- Filters -->
-  <div class="p-4 border-b flex flex-wrap gap-2" style="border-color: var(--border);">
-    <button class="filter-chip active" data-filter="all">All</button>
-    <button class="filter-chip" data-filter="evidenced">Evidenced</button>
-    <button class="filter-chip" data-filter="weak">Weak</button>
-    <button class="filter-chip" data-filter="missing">Missing</button>
-    <button class="filter-chip" data-filter="stale">Stale</button>
-  </div>
+    <!-- Control list -->
+    <div class="px-2 pb-20 space-y-1" id="control-list"></div>
+  </aside>
 
-  <!-- Search -->
-  <div class="p-4 border-b" style="border-color: var(--border);">
-    <input type="text" id="search-input" placeholder="Search controls..."
-      class="w-full px-3 py-2 rounded text-sm"
-      style="background: var(--bg-tertiary); border: 1px solid var(--border); color: var(--text-primary);">
-  </div>
+  <!-- Main View Area -->
+  <main class="main-content">
+    <header class="flex flex-wrap gap-4 mb-10 border-b border-soft pb-4 overflow-x-auto no-scrollbar" role="tablist">
+      <button class="tab-button active text-sm font-semibold border-b-2 border-blue-500 pb-2 px-4 transition-colors" data-tab="detail">Control Details</button>
+      <button class="tab-button text-sm font-semibold opacity-50 pb-2 px-4 hover:opacity-100" data-tab="dashboard">Dashboard</button>
+      <button class="tab-button text-sm font-semibold opacity-50 pb-2 px-4 hover:opacity-100" data-tab="gaps">Gap Report</button>
+      <button class="tab-button text-sm font-semibold opacity-50 pb-2 px-4 hover:opacity-100" data-tab="export">Export</button>
+    </header>
 
-  <!-- Control list -->
-  <div id="control-list"></div>
-</div>
+    <!-- Tab Content -->
+    <div id="tab-detail" class="max-w-4xl animate-in fade-in duration-500">
+      <div id="detail-placeholder" class="text-center py-32 opacity-30">
+        <svg class="mx-auto mb-4" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>
+        <p class="text-lg font-medium">Select a control to begin audit review</p>
+      </div>
 
-<!-- Main content -->
-<div class="main-content">
-  <!-- Top tabs -->
-  <div class="border-b flex" style="border-color: var(--border); background: var(--bg-secondary);">
-    <button class="tab-button active" data-tab="detail">Control Detail</button>
-    <button class="tab-button" data-tab="dashboard">Dashboard</button>
-    <button class="tab-button" data-tab="crosswalk">Cross-Framework</button>
-    <button class="tab-button" data-tab="gaps">Gap Report</button>
-    <button class="tab-button" data-tab="export">Export</button>
-  </div>
-
-  <!-- Tab: Control Detail -->
-  <div id="tab-detail" class="p-6">
-    <div id="detail-placeholder" class="text-center py-20" style="color: var(--text-muted);">
-      <svg class="mx-auto mb-4" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-        <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-      </svg>
-      <p class="text-sm">Select a control from the sidebar to view details</p>
-    </div>
-    <div id="detail-content" class="hidden">
-      <div class="flex items-start justify-between mb-6">
-        <div>
-          <div class="flex items-center gap-3 mb-1">
-            <span class="mono text-sm font-semibold" style="color: var(--accent-blue);" id="detail-id"></span>
-            <span class="status-badge" id="detail-status"></span>
+      <article id="detail-content" class="hidden stack">
+        <div class="flex items-start justify-between">
+          <div class="space-y-2">
+            <div class="flex items-center gap-3">
+              <span class="mono text-xs font-bold tracking-widest text-blue-500" id="detail-id"></span>
+              <span class="badge" id="detail-status"></span>
+            </div>
+            <h2 class="text-4xl font-bold tracking-tight" id="detail-name"></h2>
+            <p class="text-lg opacity-80 leading-relaxed max-w-2xl" id="detail-description"></p>
           </div>
-          <h2 class="text-xl font-semibold" id="detail-name"></h2>
-          <p class="text-sm mt-2" style="color: var(--text-secondary);" id="detail-description"></p>
+        </div>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
+          <!-- Evidence -->
+          <div class="space-y-4">
+            <h3 class="text-xs font-bold uppercase tracking-widest opacity-50">Evidence Artifacts</h3>
+            <div id="evidence-list" class="space-y-3"></div>
+            <div id="no-evidence" class="hidden p-8 rounded-2xl border-2 border-dashed border-red-500/20 text-center text-red-500/80 bg-red-500/5">
+              <p class="text-sm font-medium">Critical: No direct evidence found</p>
+            </div>
+          </div>
+
+          <!-- Analysis & Actions -->
+          <div class="space-y-6">
+            <div id="remediation-section" class="hidden stack-sm">
+              <h3 class="text-xs font-bold uppercase tracking-widest opacity-50">Remediation Strategy</h3>
+              <div class="bg-amber-500/5 border border-amber-500/20 p-6 rounded-2xl" id="remediation-content"></div>
+            </div>
+
+            <div class="stack-sm">
+              <h3 class="text-xs font-bold uppercase tracking-widest opacity-50">Internal Audit Notes</h3>
+              <textarea class="text-area" id="comment-input" placeholder="Draft findings for this control..."></textarea>
+              <div class="flex justify-between items-center">
+                <span class="text-[10px] mono uppercase opacity-40 font-bold" id="comment-saved"></span>
+                <button onclick="saveComment()" class="btn-primary">Commit Findings</button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </article>
+    </div>
+
+    <!-- Tab: Dashboard -->
+    <div id="tab-dashboard" class="hidden max-w-6xl space-y-12">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-surface border border-soft p-8 rounded-3xl">
+          <p class="text-xs font-bold uppercase opacity-50 mb-1">Maturity Score</p>
+          <p class="text-5xl font-bold mono" id="dash-maturity">3.2</p>
+        </div>
+        <div class="bg-surface border border-soft p-8 rounded-3xl">
+          <p class="text-xs font-bold uppercase opacity-50 mb-1">Compliance Coverage</p>
+          <p class="text-5xl font-bold mono text-green-500" id="dash-pct">0%</p>
+        </div>
+        <div class="bg-surface border border-soft p-8 rounded-3xl">
+          <p class="text-xs font-bold uppercase opacity-50 mb-1">Critical Gaps</p>
+          <p class="text-5xl font-bold mono text-red-500" id="dash-missing">0</p>
+        </div>
+        <div class="bg-surface border border-soft p-8 rounded-3xl">
+          <p class="text-xs font-bold uppercase opacity-50 mb-1">Active Evidence</p>
+          <p class="text-5xl font-bold mono text-blue-500" id="dash-evidenced">0</p>
         </div>
       </div>
 
-      <!-- Evidence section -->
-      <div class="mb-6">
-        <h3 class="text-sm font-semibold mb-3 uppercase tracking-wide" style="color: var(--text-secondary);">
-          Mapped Evidence
-        </h3>
-        <div id="evidence-list"></div>
-        <div id="no-evidence" class="hidden p-4 rounded-lg text-center text-sm"
-          style="background: rgba(239,68,68,0.08); color: var(--accent-red);">
-          No evidence documents mapped to this control
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div class="bg-surface border border-soft p-8 rounded-3xl flex items-center justify-center">
+          <div class="w-full max-w-sm">
+            <canvas id="maturityChart"></canvas>
+          </div>
         </div>
-      </div>
-
-      <!-- Cross-framework mapping -->
-      <div class="mb-6">
-        <h3 class="text-sm font-semibold mb-3 uppercase tracking-wide" style="color: var(--text-secondary);">
-          Cross-Framework Mapping
-        </h3>
-        <div id="crosswalk-section" class="flex flex-wrap gap-1"></div>
-      </div>
-
-      <!-- Remediation suggestion -->
-      <div id="remediation-section" class="mb-6 hidden">
-        <h3 class="text-sm font-semibold mb-3 uppercase tracking-wide" style="color: var(--text-secondary);">
-          Remediation Suggestion
-        </h3>
-        <div class="evidence-card" id="remediation-content"></div>
-      </div>
-
-      <!-- Auditor comments -->
-      <div class="mb-6">
-        <h3 class="text-sm font-semibold mb-3 uppercase tracking-wide" style="color: var(--text-secondary);">
-          Auditor Notes
-        </h3>
-        <textarea class="comment-box" id="comment-input" placeholder="Add notes for this control..."></textarea>
-        <div class="flex justify-between items-center mt-2">
-          <span class="text-xs" style="color: var(--text-muted);" id="comment-saved"></span>
-          <button onclick="saveComment()" class="text-xs px-3 py-1 rounded"
-            style="background: var(--accent-blue); color: white;">Save Note</button>
+        <div class="bg-surface border border-soft p-8 rounded-3xl space-y-6">
+          <h3 class="text-sm font-bold uppercase opacity-50">Domain Integrity Breakdown</h3>
+          <div id="domain-breakdown" class="space-y-4"></div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Tab: Dashboard -->
-  <div id="tab-dashboard" class="p-6 hidden">
-    <h2 class="text-xl font-semibold mb-6">Compliance Maturity Dashboard</h2>
-
-    <!-- Stat cards -->
-    <div class="grid grid-cols-4 gap-4 mb-8">
-      <div class="stat-card">
-        <p class="text-xs uppercase tracking-wide mb-1" style="color: var(--text-secondary);">Total Controls</p>
-        <p class="text-2xl font-bold mono" id="dash-total">0</p>
-      </div>
-      <div class="stat-card">
-        <p class="text-xs uppercase tracking-wide mb-1" style="color: var(--accent-green);">Evidenced</p>
-        <p class="text-2xl font-bold mono" id="dash-evidenced">0</p>
-      </div>
-      <div class="stat-card">
-        <p class="text-xs uppercase tracking-wide mb-1" style="color: var(--accent-amber);">Weak/Stale</p>
-        <p class="text-2xl font-bold mono" id="dash-weak">0</p>
-      </div>
-      <div class="stat-card">
-        <p class="text-xs uppercase tracking-wide mb-1" style="color: var(--accent-red);">Missing</p>
-        <p class="text-2xl font-bold mono" id="dash-missing">0</p>
-      </div>
+    <!-- Tab: Gaps -->
+    <div id="tab-gaps" class="hidden max-w-4xl space-y-6">
+      <header class="mb-8">
+        <h2 class="text-4xl font-bold tracking-tight">Gap Analysis Summary</h2>
+        <p class="text-lg opacity-60">Prioritized remediation queue for framework compliance.</p>
+      </header>
+      <div id="gap-list" class="space-y-4"></div>
     </div>
 
-    <!-- Radar chart -->
-    <div class="stat-card mb-8">
-      <h3 class="text-sm font-semibold mb-4">Maturity by Domain</h3>
-      <div style="max-width: 500px; margin: 0 auto;">
-        <canvas id="maturityChart"></canvas>
+    <!-- Tab: Export -->
+    <div id="tab-export" class="hidden max-w-2xl">
+      <div class="grid grid-cols-1 gap-4">
+        <button onclick="exportJSON()" class="group flex items-center justify-between p-6 bg-surface border border-soft rounded-2xl hover:border-blue-500 transition-all">
+          <div class="text-left">
+            <span class="font-bold text-lg mb-1 block">Full Data Snapshot (JSON)</span>
+            <span class="text-sm opacity-50">Machine-readable assessment manifest</span>
+          </div>
+          <svg class="opacity-0 group-hover:opacity-100 transition-opacity" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-4-4l4 4-4 4"/></svg>
+        </button>
+        <button onclick="exportCSV()" class="group flex items-center justify-between p-6 bg-surface border border-soft rounded-2xl hover:border-blue-500 transition-all">
+          <div class="text-left">
+            <span class="font-bold text-lg mb-1 block">Remediation Tracker (CSV)</span>
+            <span class="text-sm opacity-50">Import-ready sprint planning file</span>
+          </div>
+          <svg class="opacity-0 group-hover:opacity-100 transition-opacity" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-4-4l4 4-4 4"/></svg>
+        </button>
       </div>
     </div>
-
-    <!-- Domain breakdown -->
-    <div class="stat-card">
-      <h3 class="text-sm font-semibold mb-4">Domain Coverage Breakdown</h3>
-      <div id="domain-breakdown"></div>
-    </div>
-  </div>
-
-  <!-- Tab: Cross-Framework -->
-  <div id="tab-crosswalk" class="p-6 hidden">
-    <h2 class="text-xl font-semibold mb-2">Cross-Framework Control Mapping</h2>
-    <p class="text-sm mb-6" style="color: var(--text-secondary);">See how your evidence maps across multiple frameworks simultaneously.</p>
-    <div id="crosswalk-table" class="overflow-x-auto"></div>
-  </div>
-
-  <!-- Tab: Gap Report -->
-  <div id="tab-gaps" class="p-6 hidden">
-    <h2 class="text-xl font-semibold mb-2">Gap Analysis Report</h2>
-    <p class="text-sm mb-6" style="color: var(--text-secondary);">Prioritized list of missing or weak controls requiring remediation.</p>
-    <div id="gap-list"></div>
-  </div>
-
-  <!-- Tab: Export -->
-  <div id="tab-export" class="p-6 hidden">
-    <h2 class="text-xl font-semibold mb-6">Export Assessment Data</h2>
-    <div class="grid grid-cols-2 gap-4" style="max-width: 600px;">
-      <button onclick="exportJSON()" class="stat-card text-left hover:border-blue-500 transition-colors cursor-pointer">
-        <p class="font-semibold mb-1">Export as JSON</p>
-        <p class="text-xs" style="color: var(--text-secondary);">Full assessment data with all evidence mappings, gaps, and comments</p>
-      </button>
-      <button onclick="exportCSV()" class="stat-card text-left hover:border-blue-500 transition-colors cursor-pointer">
-        <p class="font-semibold mb-1">Export as CSV</p>
-        <p class="text-xs" style="color: var(--text-secondary);">Remediation tracker spreadsheet for team assignment</p>
-      </button>
-      <button onclick="exportComments()" class="stat-card text-left hover:border-blue-500 transition-colors cursor-pointer">
-        <p class="font-semibold mb-1">Export Comments</p>
-        <p class="text-xs" style="color: var(--text-secondary);">All auditor notes as a structured JSON file</p>
-      </button>
-      <button onclick="printReport()" class="stat-card text-left hover:border-blue-500 transition-colors cursor-pointer">
-        <p class="font-semibold mb-1">Print Summary</p>
-        <p class="text-xs" style="color: var(--text-secondary);">Printer-friendly gap analysis summary</p>
-      </button>
-    </div>
-  </div>
+  </main>
 </div>
 
 <script>
-// ===== DATA INJECTION POINT =====
-// The skill will replace this with actual assessment data
-const ASSESSMENT_DATA = __ASSESSMENT_DATA_PLACEHOLDER__;
-
-// ===== STATE =====
+// ===== BOOT & DATA =====
+// Note: This placeholder MUST be replaced by the tool at runtime
+const ASSESSMENT_DATA = window.ASSESSMENT_DATA || { framework: 'ISO 27001', controls: [] };
 let currentControlId = null;
 let currentFilter = 'all';
 let comments = JSON.parse(localStorage.getItem('audit_comments') || '{}');
 
-// ===== INITIALIZATION =====
 function init() {
-  document.getElementById('framework-label').textContent = ASSESSMENT_DATA.framework || 'Unknown Framework';
-  document.getElementById('scan-date').textContent = `Scanned: ${ASSESSMENT_DATA.scan_date || 'Unknown'}`;
-
+  if (typeof ASSESSMENT_DATA === 'undefined') return;
+  
+  document.getElementById('framework-label').textContent = ASSESSMENT_DATA.framework || 'Framework';
+  document.getElementById('scan-date').textContent = ASSESSMENT_DATA.scan_date || '--';
+  
   renderControlList();
   updateStats();
   setupEventListeners();
   renderDashboard();
   renderGapReport();
-  renderCrosswalkTable();
 }
 
 function renderControlList() {
   const list = document.getElementById('control-list');
   const search = document.getElementById('search-input').value.toLowerCase();
-
-  const controls = ASSESSMENT_DATA.controls || [];
-  let filtered = controls;
-
-  if (currentFilter !== 'all') {
-    filtered = filtered.filter(c => c.status === currentFilter);
-  }
-  if (search) {
-    filtered = filtered.filter(c =>
-      c.id.toLowerCase().includes(search) ||
-      c.name.toLowerCase().includes(search)
-    );
-  }
+  
+  let filtered = (ASSESSMENT_DATA.controls || []).filter(c => {
+    const matchesFilter = currentFilter === 'all' || c.status === currentFilter;
+    const matchesSearch = c.id.toLowerCase().includes(search) || c.name.toLowerCase().includes(search);
+    return matchesFilter && matchesSearch;
+  });
 
   list.innerHTML = filtered.map(c => `
-    <div class="control-item ${currentControlId === c.id ? 'active' : ''}"
-         onclick="selectControl('${c.id}')">
-      <div class="flex items-center justify-between mb-1">
-        <span class="mono text-xs font-medium" style="color: var(--accent-blue);">${c.id}</span>
-        <span class="status-badge status-${c.status}">
-          ${c.status === 'evidenced' ? '&#10003;' : c.status === 'weak' ? '&#9888;' : c.status === 'stale' ? '&#8635;' : '&#10007;'}
-          ${c.status}
-        </span>
+    <button class="control-card w-full text-left space-y-1 mt-1 ${currentControlId === c.id ? 'active' : ''}" 
+            onclick="selectControl('${c.id}')">
+      <div class="flex items-center justify-between">
+        <span class="mono text-[10px] font-bold text-blue-500 opacity-80">${c.id}</span>
+        <span class="badge st-${c.status} text-[9px]">${c.status}</span>
       </div>
-      <p class="text-xs truncate" style="color: var(--text-secondary);">${c.name}</p>
-      ${c.evidence_count ? `<p class="text-xs mt-1" style="color: var(--text-muted);">${c.evidence_count} document${c.evidence_count > 1 ? 's' : ''}</p>` : ''}
-    </div>
+      <p class="text-xs font-semibold truncate leading-none">${c.name}</p>
+    </button>
   `).join('');
 }
 
 function selectControl(id) {
   currentControlId = id;
-  const control = ASSESSMENT_DATA.controls.find(c => c.id === id);
-  if (!control) return;
+  const c = ASSESSMENT_DATA.controls.find(ctrl => ctrl.id === id);
+  if (!c) return;
 
   document.getElementById('detail-placeholder').classList.add('hidden');
-  document.getElementById('detail-content').classList.remove('hidden');
+  const content = document.getElementById('detail-content');
+  content.classList.remove('hidden');
 
-  document.getElementById('detail-id').textContent = control.id;
-  document.getElementById('detail-name').textContent = control.name;
-  document.getElementById('detail-description').textContent = control.description || '';
-
+  document.getElementById('detail-id').textContent = c.id;
+  document.getElementById('detail-name').textContent = c.name;
+  document.getElementById('detail-description').textContent = c.description;
+  
   const statusEl = document.getElementById('detail-status');
-  statusEl.className = `status-badge status-${control.status}`;
-  statusEl.textContent = control.status;
+  statusEl.className = `badge st-${c.status}`;
+  statusEl.textContent = c.status;
 
   // Evidence
-  const evidenceList = document.getElementById('evidence-list');
-  const noEvidence = document.getElementById('no-evidence');
-
-  if (control.evidence && control.evidence.length > 0) {
-    evidenceList.innerHTML = control.evidence.map(e => `
-      <div class="evidence-card">
-        <div class="flex items-start justify-between mb-2">
-          <div>
-            <p class="text-sm font-medium">${e.filename}</p>
-            <p class="text-xs" style="color: var(--text-muted);">${e.doc_type || 'Document'}</p>
-          </div>
-          <span class="status-badge status-${e.strength === 'direct' ? 'evidenced' : 'weak'}">${e.strength}</span>
+  const list = document.getElementById('evidence-list');
+  const none = document.getElementById('no-evidence');
+  if (c.evidence?.length) {
+    list.innerHTML = c.evidence.map(e => `
+      <div class="evidence-item flex items-start justify-between">
+        <div>
+          <p class="font-bold text-sm">${e.filename}</p>
+          <p class="text-xs opacity-50">${e.doc_type}</p>
+          <p class="text-xs mt-3 leading-relaxed opacity-80">${e.summary || ''}</p>
         </div>
-        <p class="text-xs" style="color: var(--text-secondary);">${e.summary || ''}</p>
-        ${e.freshness ? `<p class="text-xs mt-2 mono" style="color: ${e.freshness === 'current' ? 'var(--accent-green)' : e.freshness === 'stale' ? 'var(--accent-red)' : 'var(--accent-amber)'};">
-          ${e.freshness === 'current' ? 'Current' : e.freshness === 'stale' ? 'Stale — needs refresh' : 'Aging'} ${e.last_updated ? '(' + e.last_updated + ')' : ''}
-        </p>` : ''}
+        <span class="badge ${e.strength === 'direct' ? 'st-evidenced' : 'st-weak'}">${e.strength}</span>
       </div>
     `).join('');
-    evidenceList.classList.remove('hidden');
-    noEvidence.classList.add('hidden');
+    list.classList.remove('hidden');
+    none.classList.add('hidden');
   } else {
-    evidenceList.classList.add('hidden');
-    noEvidence.classList.remove('hidden');
-  }
-
-  // Crosswalk
-  const crosswalkSection = document.getElementById('crosswalk-section');
-  if (control.crosswalk) {
-    const colors = {
-      'SOC 2': '#3b82f6', 'HIPAA': '#22c55e', 'NIST CSF': '#f59e0b',
-      'PCI DSS': '#ef4444', 'GDPR': '#8b5cf6'
-    };
-    crosswalkSection.innerHTML = Object.entries(control.crosswalk).map(([fw, ctrl]) =>
-      `<span class="crosswalk-badge" style="background: ${colors[fw] || '#6b7280'}20; color: ${colors[fw] || '#6b7280'};">${fw}: ${ctrl}</span>`
-    ).join('');
-  } else {
-    crosswalkSection.innerHTML = '<span class="text-xs" style="color: var(--text-muted);">No cross-framework mappings available</span>';
+    list.classList.add('hidden');
+    none.classList.remove('hidden');
   }
 
   // Remediation
-  const remSection = document.getElementById('remediation-section');
-  const remContent = document.getElementById('remediation-content');
-  if (control.status === 'missing' || control.status === 'weak') {
-    remSection.classList.remove('hidden');
-    remContent.innerHTML = `
-      <p class="text-sm mb-2">${control.remediation || 'Create appropriate documentation for this control.'}</p>
-      ${control.effort ? `<span class="text-xs mono" style="color: var(--accent-amber);">Effort: ${control.effort}</span>` : ''}
-      ${control.risk_level ? `<span class="text-xs mono ml-3" style="color: var(--accent-red);">Risk: ${control.risk_level}</span>` : ''}
+  const rem = document.getElementById('remediation-section');
+  if (['missing', 'weak', 'stale'].includes(c.status)) {
+    rem.classList.remove('hidden');
+    document.getElementById('remediation-content').innerHTML = `
+      <p class="text-sm font-medium leading-relaxed">${c.remediation || 'Develop and approve a supporting control narrative and evidence artifact.'}</p>
+      <div class="flex gap-4 mt-6">
+        <div class="flex flex-col"><span class="text-[9px] font-bold uppercase opacity-40">Effort</span><span class="text-xs font-bold">${c.effort || 'Moderate'}</span></div>
+        <div class="flex flex-col"><span class="text-[9px] font-bold uppercase opacity-40">Risk</span><span class="text-xs font-bold text-red-500">${c.risk_level || 'High'}</span></div>
+      </div>
     `;
-  } else {
-    remSection.classList.add('hidden');
-  }
+  } else { rem.classList.add('hidden'); }
 
-  // Comments
   document.getElementById('comment-input').value = comments[id] || '';
   document.getElementById('comment-saved').textContent = '';
-
+  
   renderControlList();
+  if (window.innerWidth < 1024) document.getElementById('sidebar').classList.remove('open');
 }
 
 function saveComment() {
   if (!currentControlId) return;
-  const text = document.getElementById('comment-input').value;
-  comments[currentControlId] = text;
+  comments[currentControlId] = document.getElementById('comment-input').value;
   localStorage.setItem('audit_comments', JSON.stringify(comments));
-  document.getElementById('comment-saved').textContent = `Saved at ${new Date().toLocaleTimeString()}`;
+  document.getElementById('comment-saved').textContent = `Committed at ${new Date().toLocaleTimeString()}`;
 }
 
 function updateStats() {
-  const controls = ASSESSMENT_DATA.controls || [];
-  const evidenced = controls.filter(c => c.status === 'evidenced').length;
-  const missing = controls.filter(c => c.status === 'missing').length;
-  const weak = controls.filter(c => c.status === 'weak').length;
-  const stale = controls.filter(c => c.status === 'stale').length;
-  const total = controls.length;
-  const pct = total > 0 ? Math.round((evidenced / total) * 100) : 0;
+  const ctrls = ASSESSMENT_DATA.controls || [];
+  const ev = ctrls.filter(c => c.status === 'evidenced').length;
+  const mi = ctrls.filter(c => c.status === 'missing').length;
+  const st = ctrls.filter(c => c.status === 'stale').length;
+  const pct = ctrls.length ? Math.round((ev / ctrls.length) * 100) : 0;
 
   document.getElementById('coverage-pct').textContent = pct + '%';
+  document.getElementById('dash-pct').textContent = pct + '%';
+  document.getElementById('mobile-progress').textContent = pct + '%';
   document.getElementById('coverage-bar').style.width = pct + '%';
-  document.getElementById('stat-evidenced').textContent = evidenced + ' evidenced';
-  document.getElementById('stat-gaps').textContent = missing + ' gaps';
-  document.getElementById('stat-stale').textContent = stale + ' stale';
+  document.getElementById('stat-evidenced').textContent = ev + ' OK';
+  document.getElementById('stat-gaps').textContent = mi + ' Gap';
+  document.getElementById('stat-stale').textContent = st + ' Stale';
+  document.getElementById('dash-evidenced').textContent = ev;
+  document.getElementById('dash-missing').textContent = mi;
 }
 
 function renderDashboard() {
-  const controls = ASSESSMENT_DATA.controls || [];
-  const evidenced = controls.filter(c => c.status === 'evidenced').length;
-  const missing = controls.filter(c => c.status === 'missing').length;
-  const weak = controls.filter(c => c.status === 'weak' || c.status === 'stale').length;
+  const scores = ASSESSMENT_DATA.maturity_scores || {};
+  const labels = Object.keys(scores);
+  const data = Object.values(scores);
 
-  document.getElementById('dash-total').textContent = controls.length;
-  document.getElementById('dash-evidenced').textContent = evidenced;
-  document.getElementById('dash-weak').textContent = weak;
-  document.getElementById('dash-missing').textContent = missing;
-
-  // Maturity radar chart
-  const domains = ASSESSMENT_DATA.maturity_scores || {};
-  const labels = Object.keys(domains);
-  const scores = Object.values(domains);
-
-  if (labels.length > 0) {
-    const ctx = document.getElementById('maturityChart').getContext('2d');
-    new Chart(ctx, {
+  if (labels.length) {
+    new Chart(document.getElementById('maturityChart'), {
       type: 'radar',
       data: {
-        labels: labels,
+        labels,
         datasets: [{
-          label: 'Maturity Score',
-          data: scores,
+          data,
           fill: true,
-          backgroundColor: 'rgba(59, 130, 246, 0.15)',
-          borderColor: 'rgba(59, 130, 246, 0.8)',
-          pointBackgroundColor: 'rgba(59, 130, 246, 1)',
-          pointBorderColor: '#fff',
+          backgroundColor: 'color-mix(in oklch, var(--accent-blue), transparent 90%)',
+          borderColor: 'var(--accent-blue)',
+          pointBackgroundColor: 'var(--accent-blue)',
           pointRadius: 4
         }]
       },
       options: {
-        scales: {
-          r: {
-            min: 0, max: 5,
-            ticks: { stepSize: 1, color: '#6b7280', backdropColor: 'transparent' },
-            grid: { color: '#2d3142' },
-            pointLabels: { color: '#9aa0b0', font: { size: 11 } },
-            angleLines: { color: '#2d3142' }
-          }
-        },
-        plugins: {
-          legend: { display: false }
-        }
+        scales: { r: { min: 0, max: 5, ticks: { stepSize: 1, display: false }, grid: { color: 'var(--border-soft)' }, pointLabels: { font: { family: 'Outfit', size: 10 }, color: 'var(--text-dim)' } } },
+        plugins: { legend: { display: false } }
       }
     });
   }
 
-  // Domain breakdown
-  const breakdown = document.getElementById('domain-breakdown');
-  const domainStats = {};
-  controls.forEach(c => {
-    const domain = c.domain || 'Unknown';
-    if (!domainStats[domain]) domainStats[domain] = { total: 0, evidenced: 0 };
-    domainStats[domain].total++;
-    if (c.status === 'evidenced') domainStats[domain].evidenced++;
+  // Domain List
+  const domains = {};
+  (ASSESSMENT_DATA.controls || []).forEach(c => {
+    if (!domains[c.domain]) domains[c.domain] = { t: 0, e: 0 };
+    domains[c.domain].t++;
+    if (c.status === 'evidenced') domains[c.domain].e++;
   });
 
-  breakdown.innerHTML = Object.entries(domainStats).map(([domain, stats]) => {
-    const pct = Math.round((stats.evidenced / stats.total) * 100);
-    const color = pct >= 80 ? 'var(--accent-green)' : pct >= 50 ? 'var(--accent-amber)' : 'var(--accent-red)';
+  document.getElementById('domain-breakdown').innerHTML = Object.entries(domains).map(([name, s]) => {
+    const p = Math.round((s.e / s.t) * 100);
     return `
-      <div class="flex items-center gap-4 mb-3">
-        <span class="text-xs w-48 truncate" style="color: var(--text-secondary);">${domain}</span>
-        <div class="flex-1 progress-bar">
-          <div class="progress-fill" style="width: ${pct}%; background: ${color};"></div>
+      <div class="space-y-1">
+        <div class="flex justify-between text-[11px] font-bold">
+          <span class="opacity-60">${name}</span>
+          <span class="mono">${s.e}/${s.t}</span>
         </div>
-        <span class="text-xs mono w-16 text-right">${stats.evidenced}/${stats.total}</span>
+        <div class="h-1 bg-soft rounded-full overflow-hidden">
+          <div class="h-full bg-blue-500" style="width: ${p}%"></div>
+        </div>
       </div>
     `;
   }).join('');
 }
 
-function renderGapReport() {
-  const gaps = (ASSESSMENT_DATA.controls || []).filter(c => c.status === 'missing' || c.status === 'weak');
-  gaps.sort((a, b) => {
-    const priority = { 'Critical': 0, 'High': 1, 'Medium': 2, 'Low': 3 };
-    return (priority[a.risk_level] || 3) - (priority[b.risk_level] || 3);
+function setupEventListeners() {
+  document.getElementById('menu-toggle').onclick = () => document.getElementById('sidebar').classList.toggle('open');
+  document.querySelectorAll('.filter-chip, .badge[data-filter]').forEach(b => b.onclick = () => {
+    document.querySelectorAll('[data-filter]').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    currentFilter = b.dataset.filter;
+    renderControlList();
   });
+  document.querySelectorAll('.tab-button').forEach(b => b.onclick = () => {
+    document.querySelectorAll('.tab-button').forEach(x => x.classList.remove('active', 'border-blue-500', 'opacity-100'));
+    b.classList.add('active', 'border-blue-500', 'opacity-100');
+    ['detail', 'dashboard', 'gaps', 'export'].forEach(t => document.getElementById('tab-' + t).classList.toggle('hidden', b.dataset.tab !== t));
+  });
+  document.getElementById('search-input').oninput = renderControlList;
+}
 
-  const gapList = document.getElementById('gap-list');
-  if (gaps.length === 0) {
-    gapList.innerHTML = '<div class="text-center py-10" style="color: var(--accent-green);">No gaps found — full coverage achieved</div>';
-    return;
-  }
-
-  gapList.innerHTML = gaps.map(g => `
-    <div class="evidence-card cursor-pointer" onclick="selectControl('${g.id}'); switchTab('detail');">
-      <div class="flex items-center justify-between mb-2">
+function renderGapReport() {
+  const gaps = (ASSESSMENT_DATA.controls || []).filter(c => c.status !== 'evidenced');
+  document.getElementById('gap-list').innerHTML = gaps.map(g => `
+    <button onclick="selectControl('${g.id}'); switchTab('detail')" 
+            class="w-full text-left p-6 bg-surface border border-soft rounded-2xl flex items-center justify-between hover:border-amber-500 transition-all">
+      <div class="space-y-1">
         <div class="flex items-center gap-2">
-          <span class="mono text-xs font-semibold" style="color: var(--accent-blue);">${g.id}</span>
-          <span class="status-badge status-${g.status}">${g.status}</span>
-          ${g.risk_level ? `<span class="text-xs font-semibold" style="color: ${g.risk_level === 'Critical' ? 'var(--accent-red)' : g.risk_level === 'High' ? 'var(--accent-amber)' : 'var(--text-muted)'};">
-            ${g.risk_level}
-          </span>` : ''}
+          <span class="mono text-[10px] font-bold text-amber-500">${g.id}</span>
+          <span class="badge st-${g.status} text-[9px]">${g.status}</span>
         </div>
-        ${g.effort ? `<span class="text-xs mono" style="color: var(--text-muted);">${g.effort}</span>` : ''}
+        <p class="font-bold">${g.name}</p>
       </div>
-      <p class="text-sm">${g.name}</p>
-      ${g.remediation ? `<p class="text-xs mt-2" style="color: var(--text-secondary);">${g.remediation}</p>` : ''}
-    </div>
+      <span class="text-[10px] font-black uppercase tracking-tighter text-red-500">${g.risk_level || 'High'}</span>
+    </button>
   `).join('');
 }
 
-function renderCrosswalkTable() {
-  const controls = ASSESSMENT_DATA.controls || [];
-  const hasAnyCrosswalk = controls.some(c => c.crosswalk && Object.keys(c.crosswalk).length > 0);
+function switchTab(name) { document.querySelector(`[data-tab="${name}"]`).click(); }
 
-  if (!hasAnyCrosswalk) {
-    document.getElementById('crosswalk-table').innerHTML =
-      '<p class="text-sm" style="color: var(--text-muted);">Cross-framework mapping data not available for this assessment.</p>';
-    return;
-  }
-
-  const frameworks = new Set();
-  controls.forEach(c => {
-    if (c.crosswalk) Object.keys(c.crosswalk).forEach(fw => frameworks.add(fw));
-  });
-  const fwList = [...frameworks];
-
-  let html = `<table class="w-full text-xs">
-    <thead><tr>
-      <th class="text-left p-2" style="border-bottom: 1px solid var(--border);">Control</th>
-      ${fwList.map(fw => `<th class="text-left p-2" style="border-bottom: 1px solid var(--border);">${fw}</th>`).join('')}
-    </tr></thead><tbody>`;
-
-  controls.forEach(c => {
-    if (!c.crosswalk || Object.keys(c.crosswalk).length === 0) return;
-    html += `<tr>
-      <td class="p-2 mono" style="border-bottom: 1px solid var(--border); color: var(--accent-blue);">${c.id} — ${c.name}</td>
-      ${fwList.map(fw => `<td class="p-2 mono" style="border-bottom: 1px solid var(--border); color: var(--text-secondary);">${c.crosswalk[fw] || '—'}</td>`).join('')}
-    </tr>`;
-  });
-
-  html += '</tbody></table>';
-  document.getElementById('crosswalk-table').innerHTML = html;
-}
-
-// ===== EVENT LISTENERS =====
-function setupEventListeners() {
-  // Filters
-  document.querySelectorAll('.filter-chip').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      currentFilter = btn.dataset.filter;
-      renderControlList();
-    });
-  });
-
-  // Tabs
-  document.querySelectorAll('.tab-button').forEach(btn => {
-    btn.addEventListener('click', () => switchTab(btn.dataset.tab));
-  });
-
-  // Search
-  document.getElementById('search-input').addEventListener('input', renderControlList);
-
-  // Auto-save comments on blur
-  document.getElementById('comment-input').addEventListener('blur', saveComment);
-}
-
-function switchTab(tabName) {
-  document.querySelectorAll('.tab-button').forEach(b => {
-    b.classList.toggle('active', b.dataset.tab === tabName);
-  });
-  ['detail', 'dashboard', 'crosswalk', 'gaps', 'export'].forEach(t => {
-    const el = document.getElementById('tab-' + t);
-    if (el) el.classList.toggle('hidden', t !== tabName);
-  });
-}
-
-// ===== EXPORTS =====
 function exportJSON() {
-  const data = { ...ASSESSMENT_DATA, comments };
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-  downloadBlob(blob, `compliance-assessment-${ASSESSMENT_DATA.framework}-${ASSESSMENT_DATA.scan_date}.json`);
+  const blob = new Blob([JSON.stringify({ ...ASSESSMENT_DATA, comments }, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `audit-export-${new Date().toISOString().split('T')[0]}.json`; a.click();
 }
 
-function exportCSV() {
-  const controls = ASSESSMENT_DATA.controls || [];
-  const headers = ['Control ID', 'Control Name', 'Status', 'Risk Level', 'Evidence Count', 'Remediation', 'Effort', 'Auditor Notes'];
-  const rows = controls.map(c => [
-    c.id, `"${c.name}"`, c.status, c.risk_level || '', c.evidence_count || 0,
-    `"${(c.remediation || '').replace(/"/g, '""')}"`, c.effort || '', `"${(comments[c.id] || '').replace(/"/g, '""')}"`
-  ]);
-  const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
-  downloadBlob(new Blob([csv], { type: 'text/csv' }), `gap-tracker-${ASSESSMENT_DATA.scan_date}.csv`);
-}
-
-function exportComments() {
-  const blob = new Blob([JSON.stringify(comments, null, 2)], { type: 'application/json' });
-  downloadBlob(blob, `auditor-comments-${ASSESSMENT_DATA.scan_date}.json`);
-}
-
-function printReport() {
-  const gaps = (ASSESSMENT_DATA.controls || []).filter(c => c.status !== 'evidenced');
-  let html = `<html><head><title>Gap Analysis — ${ASSESSMENT_DATA.framework}</title>
-    <style>body{font-family:sans-serif;padding:40px;max-width:800px;margin:0 auto}
-    table{width:100%;border-collapse:collapse;margin:20px 0}th,td{border:1px solid #ddd;padding:8px;text-align:left;font-size:12px}
-    th{background:#f5f5f5}h1{font-size:20px}h2{font-size:16px;margin-top:30px}</style></head><body>
-    <h1>Gap Analysis: ${ASSESSMENT_DATA.framework}</h1><p>Date: ${ASSESSMENT_DATA.scan_date}</p>
-    <table><tr><th>Control</th><th>Name</th><th>Status</th><th>Risk</th><th>Remediation</th></tr>`;
-  gaps.forEach(g => {
-    html += `<tr><td>${g.id}</td><td>${g.name}</td><td>${g.status}</td><td>${g.risk_level || ''}</td><td>${g.remediation || ''}</td></tr>`;
-  });
-  html += '</table></body></html>';
-  const w = window.open('', '_blank');
-  w.document.write(html);
-  w.document.close();
-  w.print();
-}
-
-function downloadBlob(blob, filename) {
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = filename;
-  document.body.appendChild(a); a.click();
-  document.body.removeChild(a); URL.revokeObjectURL(url);
-}
-
-// ===== BOOT =====
 document.addEventListener('DOMContentLoaded', init);
 </script>
-
 </body>
 </html>
