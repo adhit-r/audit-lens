@@ -189,6 +189,30 @@
   /* Custom Scrollbar */
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 10px; }
+
+  /* Print Optimization: Executive Reporting */
+  @media print {
+    :root { color-scheme: light; }
+    body { background: white !important; color: black !important; }
+    
+    /* Hide navigation and UI controls */
+    .sidebar, .tab-list, .mobile-nav, button { display: none !important; }
+    
+    /* Reset layout for paper */
+    .app-container { display: block; }
+    .main-content { padding: 0; margin: 0; }
+    
+    /* Print key views sequentially */
+    #tab-dashboard { display: block !important; page-break-after: always; }
+    #tab-gaps { display: block !important; page-break-after: always; }
+    
+    /* Styling adjustments for ink */
+    .hero-metric { break-inside: avoid; border: 1px solid #ccc; background: white; }
+    .control-card { break-inside: avoid; border: 1px solid #ccc; page-break-inside: avoid; }
+    
+    /* Force backgrounds and graphics */
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; box-shadow: none !important; }
+  }
 </style>
 </head>
 <body>
