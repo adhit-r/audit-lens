@@ -513,14 +513,20 @@ function setupEventListeners() {
 function renderGapReport() {
   const gaps = ASSESSMENT_DATA.controls.filter(c => c.status !== 'evidenced');
   document.getElementById('gap-list').innerHTML = gaps.map(g => `
-    <button onclick="selectControl('${g.id}'); switchTab('detail')" 
-            class="group w-full flex items-center justify-between p-8 bg-surface border border-soft rounded-[30px] transition-all hover:bg-elevated">
+    <div onclick="selectControl('${g.id}'); switchTab('detail')" 
+            class="group w-full flex flex-col md:flex-row md:items-center justify-between p-8 bg-surface border border-soft rounded-[30px] transition-all hover:bg-elevated cursor-pointer gap-6">
       <div class="text-left space-y-2">
         <div class="flex items-center gap-3"><span class="mono text-xs opacity-40">${g.id}</span><span class="badge st-missing">Gap</span></div>
         <p class="text-2xl font-bold tracking-tight">${g.name}</p>
       </div>
-      <div class="text-right"><p class="text-[9px] font-black uppercase opacity-30">Risk Factor</p><p class="text-xl font-bold text-red-500">${g.risk_level || 'High'}</p></div>
-    </button>
+      <div class="flex items-center gap-6 justify-between w-full md:w-auto">
+        <div class="text-left md:text-right hidden sm:block"><p class="text-[9px] font-black uppercase opacity-30">Risk Factor</p><p class="text-xl font-bold text-red-500">${g.risk_level || 'High'}</p></div>
+        <button onclick="event.stopPropagation(); alert('🤖 Agentic Workflow Triggered\\n\\nTo automatically write the missing policy for ' + '${g.id}' + ', ask your AI Assistant to run the \\\'draft_remediation\\\' MCP tool.')" class="bg-[var(--accent-blue)] text-white px-5 py-3 rounded-full text-xs font-bold hover:scale-105 transition-transform flex items-center gap-2 shadow-lg hover:shadow-xl">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.866 8.21 8.21 0 003 2.48z"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 18a3.75 3.75 0 00.495-7.467 5.99 5.99 0 00-1.925 3.546 5.974 5.974 0 01-2.133-1A3.75 3.75 0 0012 18z"/></svg>
+          Draft via Agent
+        </button>
+      </div>
+    </div>
   `).join('');
 }
 

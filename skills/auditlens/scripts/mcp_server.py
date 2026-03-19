@@ -61,6 +61,15 @@ def score_vendor(questionnaire_path: str):
     except Exception as e:
         return {"error": str(e)}
 
+def draft_remediation(domain_id: str, framework: str = "iso27001"):
+    """Drafts baseline compliance policy templates."""
+    script_path = os.path.join(os.path.dirname(__file__), "draft_remediation.py")
+    try:
+        result = subprocess.check_output([sys.executable, script_path, domain_id, "--framework", framework], text=True)
+        return json.loads(result)
+    except Exception as e:
+        return {"error": str(e)}
+
 # --- Manifest ---
 
 TOOLS = [
@@ -108,6 +117,18 @@ TOOLS = [
             },
             "required": ["questionnaire_path"]
         }
+    },
+    {
+        "name": "draft_remediation",
+        "description": "Auto-generates baseline compliance policy drafts to speed up gap remediation.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "domain_id": {"type": "string", "description": "The control domain ID missing evidence (e.g., A.5, CC6)."},
+                "framework": {"type": "string", "description": "The target framework (iso27001, soc2). Defaults to iso27001."}
+            },
+            "required": ["domain_id"]
+        }
     }
 ]
 
@@ -133,6 +154,8 @@ def main():
             send_response(track_provenance(arguments["directory"]))
         elif tool_name == "score_vendor":
             send_response(score_vendor(arguments["questionnaire_path"]))
+        elif tool_name == "draft_remediation":
+            send_response(draft_remediation(arguments["domain_id"], arguments.get("framework", "iso27001")))
         else:
             log_error(f"Tool {tool_name} not found.")
     except Exception as e:
