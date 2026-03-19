@@ -57,7 +57,29 @@ Drop your compliance evidence (PDFs, DOCX, XLSX, CSV, or scan from Google Drive 
 | 17 | **Shared Responsibility Mapping** | AWS/GCP/Azure inherited vs customer-owned controls |
 | 18 | **Cross-Org Benchmarking** | Compare maturity across subsidiaries |
 
-## Enterprise Integrations
+---
+
+## 🤖 Multi-Agent Compatibility
+
+AuditLens is designed as a cross-platform skill that can be loaded into any modern AI agent.
+
+| Agent | Integration Guide | Method |
+|-------|-------------------|--------|
+| **Claude Code** | [Method 1](INSTALL.md) | Native Plugin / SKILL.md |
+| **Antigravity** | [antigravity.md](compatibility/antigravity.md) | Native / Project Skill |
+| **GitHub Copilot** | [copilot.md](compatibility/copilot.md) | Custom Instructions |
+| **Google Gemini** | [gemini.md](compatibility/gemini.md) | Gems / System Prompt |
+| **OpenAI ChatGPT** | [chatgpt.md](compatibility/chatgpt.md) | Custom GPTs |
+
+### Model Context Protocol (MCP)
+
+For agents that support the [Model Context Protocol](https://modelcontextprotocol.io), you can run the AuditLens MCP server to expose compliance tools directly to your agent:
+
+```bash
+python3 skills/auditlens/scripts/mcp_server.py
+```
+
+This exposes `classify_evidence`, `audit_query`, `track_provenance`, and `score_vendor` as tools.
 
 | Platform | Tool | What It Scans |
 |----------|------|--------------|
