@@ -1,38 +1,28 @@
 # Contributing to AuditLens
 
-First off, thank you for considering contributing to AuditLens! It's people like you that make AuditLens such a great tool.
+We love your input! We want to make contributing to AuditLens as easy and transparent as possible, whether it's:
 
-## Code of Conduct
+- Reporting a bug
+- Discussing the current state of the code
+- Submitting a fix
+- Proposing new features
+- Becoming a maintainer
 
-This project and everyone participating in it is governed by the [AuditLens Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code.
+## All Changes Through Pull Requests
+All changes to the codebase should be made through Pull Requests.
 
-## How Can I Contribute?
+1. Fork the repo and create your branch from `main`.
+2. If you've added code that should be tested, add tests.
+3. If you've changed APIs, update the documentation.
+4. Ensure the test suite passes.
+5. Make sure your code lints.
+6. Issue that pull request!
 
-### Reporting Bugs
-- Use the [GitHub Issues](https://github.com/adhit-r/audit-lens/issues) to report bugs.
-- Include a clear, descriptive title and as much relevant information as possible.
+## Any contributions you make will be under the MIT Software License
+In short, when you submit code changes, your submissions are understood to be under the same [MIT License](LICENSE) that covers the project.
 
-### Suggesting Enhancements
-- Check the [Issues](https://github.com/adhit-r/audit-lens/issues) to see if the enhancement has already been suggested.
-- Open a new issue with the "enhancement" label.
+## Report bugs using GitHub's issue tracker
+We use GitHub issues to track public bugs. Report a bug by opening a new issue; it's that easy!
 
-### Pull Requests
-- Fork the repository.
-- Create a new branch for your feature or fix.
-- Ensure your code follows the existing style.
-- Submit a pull request with a clear description of the changes.
-
-## Development Setup
-
-1. Clone your fork.
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-3. Run tests:
-   ```bash
-   pytest
-   ```
-
-## Questions?
-Feel free to open an issue or reach out to the maintainers.
+## License
+By contributing, you agree that your contributions will be licensed under its MIT License.
