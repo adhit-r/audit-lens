@@ -5,8 +5,19 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Plugin-blueviolet)](https://code.claude.com)
 [![SKILL.md](https://img.shields.io/badge/Open%20Standard-SKILL.md-green)](https://github.com/anthropics/skills)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![GitHub Stars](https://img.shields.io/github/stars/adhit-r/audit-lens.svg?style=social)](https://github.com/adhit-r/audit-lens/stargazers)
 
-Scan your compliance evidence against ISO 27001, SOC 2, HIPAA, NIST CSF, PCI DSS — get gap analysis, maturity scoring, cross-framework mapping, vendor risk scoring, and an interactive audit workspace. Built-in privacy guardrails for handling sensitive enterprise data.
+AuditLens gives your AI agent a "compliance lens" into your infrastructure. Scan your evidence against ISO 27001, SOC 2, HIPAA, NIST CSF, PCI DSS — get gap analysis, maturity scoring, cross-framework mapping, vendor risk scoring, and a premium interactive audit workspace.
+
+## 🌟 Why AuditLens?
+
+Traditional compliance is slow, manual, and disconnected from your codebase. AuditLens changes this:
+
+- **AI-Native GRC**: Built from the ground up to integrate with agents like Claude Code and Gemini.
+- **Privacy-First**: Proprietary heuristics ensure sensitive data (PII/PHI) never leaves your environment.
+- **Map Once, Comply Many**: Our master crosswalk maps one piece of evidence across 5+ frameworks simultaneously.
+- **Actionable Gap Analysis**: Don't just find gaps — get the exact remediation steps and effort estimates.
 
 > Works with Claude Code, Claude.ai, Cowork, and any agent supporting the SKILL.md open standard.
 
