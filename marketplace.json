@@ -1,0 +1,23 @@
+{
+  "$schema": "https://code.claude.com/schemas/marketplace.json",
+  "name": "compliance-tools",
+  "description": "Enterprise compliance and GRC skills — audit automation, vendor risk scoring, evidence provenance, and more.",
+  "author": "Adhithya Rajasekaran",
+  "plugins": [
+    {
+      "name": "compliance-auditor",
+      "description": "Full GRC compliance engine — document scanning, gap analysis, maturity scoring, cross-framework mapping, interactive audit workspace, vendor scoring, evidence provenance, NL audit queries. Supports ISO 27001, SOC 2, HIPAA, NIST CSF, PCI DSS. Enterprise integrations with Google Workspace and Microsoft 365.",
+      "version": "1.0.0",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/AdhithyaR/compliance-auditor"
+      },
+      "category": "security",
+      "tags": [
+        "compliance", "grc", "audit", "iso27001", "soc2", "hipaa",
+        "nist", "pci-dss", "security", "governance", "risk",
+        "vendor-risk", "evidence-management", "enterprise"
+      ]
+    }
+  ]
+}
