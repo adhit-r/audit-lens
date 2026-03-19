@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Evidence Classification Engine for Compliance Auditor Skill
+Evidence Classification Engine for AuditLens Skill
 
 Scans a directory of documents, extracts text content, and classifies
 each document by compliance control domains. Outputs a structured

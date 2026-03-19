@@ -1,6 +1,6 @@
 # Enterprise Connector Reference
 
-This file documents how to connect to enterprise document sources for evidence ingestion. The compliance-auditor skill supports multiple storage backends — always detect which tools are available before attempting ingestion.
+This file documents how to connect to enterprise document sources for evidence ingestion. The auditlens skill supports multiple storage backends — always detect which tools are available before attempting ingestion.
 
 ## Table of Contents
 1. [Google Workspace via `gws` CLI](#gws)

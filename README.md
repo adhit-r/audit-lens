@@ -1,6 +1,10 @@
-# compliance-auditor
+# 🔍 AuditLens
 
 **Enterprise GRC compliance engine for AI coding assistants.**
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Claude Code](https://img.shields.io/badge/Claude%20Code-Plugin-blueviolet)](https://code.claude.com)
+[![SKILL.md](https://img.shields.io/badge/Open%20Standard-SKILL.md-green)](https://github.com/anthropics/skills)
 
 Scan your compliance evidence against ISO 27001, SOC 2, HIPAA, NIST CSF, PCI DSS — get gap analysis, maturity scoring, cross-framework mapping, vendor risk scoring, and an interactive audit workspace. Built-in privacy guardrails for handling sensitive enterprise data.
 
@@ -10,16 +14,16 @@ Scan your compliance evidence against ISO 27001, SOC 2, HIPAA, NIST CSF, PCI DSS
 
 **Claude Code (plugin):**
 ```bash
-/plugin marketplace add YOUR_USERNAME/compliance-auditor
+/plugin marketplace add YOUR_USERNAME/auditlens
 ```
 
 **Claude Code (manual):**
 ```bash
-git clone https://github.com/YOUR_USERNAME/compliance-auditor.git
-cp -r compliance-auditor/skills/compliance-auditor ~/.claude/skills/
+git clone https://github.com/YOUR_USERNAME/auditlens.git
+cp -r auditlens/skills/auditlens ~/.claude/skills/
 ```
 
-**Claude.ai:** Download `compliance-auditor.skill` from [Releases](../../releases) and upload in Settings.
+**Claude.ai:** Download `auditlens.skill` from [Releases](../../releases) and upload in Settings.
 
 ## What It Does
 
@@ -78,7 +82,7 @@ This skill handles sensitive enterprise data. Built-in privacy architecture incl
 | Commercial API | No | 30 days | Policies, procedures, risk registers |
 | Consumer + safeguards | Opt-out | 30 days | Quick assessments only |
 
-See [`references/privacy_guardrails.md`](skills/compliance-auditor/references/privacy_guardrails.md) for the full privacy architecture.
+See [`references/privacy_guardrails.md`](skills/auditlens/references/privacy_guardrails.md) for the full privacy architecture.
 
 ## Frameworks Supported
 
@@ -96,12 +100,12 @@ Cross-framework mapping in `references/crosswalk.md`.
 ## Repo Structure
 
 ```
-compliance-auditor/
+auditlens/
 ├── .claude-plugin/
 │   └── plugin.json                          Plugin manifest
 ├── marketplace.json                         Marketplace catalog
 ├── skills/
-│   └── compliance-auditor/
+│   └── auditlens/
 │       ├── SKILL.md                         Core skill (306 lines)
 │       ├── scripts/
 │       │   ├── classify_evidence.py         Document classifier
@@ -170,4 +174,4 @@ MIT — see [LICENSE](LICENSE)
 
 ---
 
-Built by [Adhithya Rajasekaran](https://github.com/YOUR_USERNAME) | 
+Built by [Adhithya Rajasekaran](https://github.com/YOUR_USERNAME) | Powered by the SKILL.md open standard

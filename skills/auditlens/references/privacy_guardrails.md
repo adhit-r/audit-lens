@@ -1,6 +1,6 @@
 # Privacy Guardrails for Enterprise Compliance Data
 
-This document defines the data privacy architecture for the compliance-auditor skill. Compliance evidence is among the most sensitive data an organization possesses — policies, access controls, vulnerability reports, vendor contracts, personnel records. These guardrails ensure this data is handled with the protection it demands.
+This document defines the data privacy architecture for the auditlens skill. Compliance evidence is among the most sensitive data an organization possesses — policies, access controls, vulnerability reports, vendor contracts, personnel records. These guardrails ensure this data is handled with the protection it demands.
 
 ## Table of Contents
 1. [The Privacy Problem](#problem)

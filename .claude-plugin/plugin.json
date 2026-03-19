@@ -1,11 +1,11 @@
 {
-  "name": "compliance-auditor",
+  "name": "auditlens",
   "version": "1.0.0",
   "description": "Enterprise GRC compliance engine — scans documents against ISO 27001, SOC 2, HIPAA, NIST CSF, PCI DSS. Gap analysis, maturity scoring, cross-framework mapping, interactive audit workspace, vendor security scoring, evidence provenance tracking, and NL audit queries. Integrates with Google Workspace (gws) and Microsoft 365 (m365).",
   "author": "Adhithya Rajasekaran",
   "license": "MIT",
-  "repository": "https://github.com/AdhithyaR/compliance-auditor",
+  "repository": "https://github.com/AdhithyaR/auditlens",
   "skills": [
-    "skills/compliance-auditor"
+    "skills/auditlens"
   ]
 }

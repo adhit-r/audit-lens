@@ -1,9 +1,9 @@
 ---
-name: compliance-auditor
+name: auditlens
 description: "Analyze documents, files, folders, or data sources against compliance frameworks (ISO 27001, SOC 2 Type II, HIPAA, GDPR, NIST CSF, PCI DSS, SOX, FedRAMP) and generate audit-ready outputs. Use this skill whenever a user mentions compliance, audit, certification, evidence collection, gap analysis, control mapping, framework assessment, audit readiness, regulatory requirements, or asks to organize documents for any security/privacy certification. Also trigger when users upload policy documents, security procedures, HR records, or IT documentation and want to know how it maps to compliance controls. Trigger even for adjacent requests like 'check if we're SOC 2 ready', 'what's missing for ISO', 'organize these for our auditor', 'map controls across frameworks', or 'help me prep for an audit'. This skill is the go-to for anything GRC (Governance, Risk, and Compliance) related."
 ---
 
-# Compliance Auditor Skill
+# AuditLens — Enterprise Compliance Analysis Engine
 
 An intelligent compliance analysis engine that reads organizational documents, maps them to regulatory frameworks, identifies gaps, scores maturity, and produces an interactive audit workspace.
 
