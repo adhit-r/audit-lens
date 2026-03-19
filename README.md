@@ -14,12 +14,12 @@ Scan your compliance evidence against ISO 27001, SOC 2, HIPAA, NIST CSF, PCI DSS
 
 **Claude Code (plugin):**
 ```bash
-/plugin marketplace add YOUR_USERNAME/auditlens
+/plugin marketplace add AdhithyaRajasekaran/auditlens
 ```
 
 **Claude Code (manual):**
 ```bash
-git clone https://github.com/YOUR_USERNAME/auditlens.git
+git clone https://github.com/AdhithyaRajasekaran/auditlens.git
 cp -r auditlens/skills/auditlens ~/.claude/skills/
 ```
 
@@ -174,4 +174,4 @@ MIT — see [LICENSE](LICENSE)
 
 ---
 
-Built by [Adhithya Rajasekaran](https://github.com/YOUR_USERNAME) | Powered by the SKILL.md open standard
+Built by [Adhithya Rajasekaran](https://github.com/AdhithyaRajasekaran) | Powered by the SKILL.md open standard
