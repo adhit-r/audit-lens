@@ -5,7 +5,7 @@
 ### From your marketplace
 ```bash
 # Users add your marketplace first (one-time)
-/plugin marketplace add AdhithyaR/auditlens
+/plugin marketplace add adhit-r/audit-lens
 
 # Then install the plugin
 /plugin install auditlens
@@ -14,13 +14,9 @@
 ### From local directory
 ```bash
 # Clone the repo
-git clone https://github.com/AdhithyaR/auditlens.git
+git clone https://github.com/adhit-r/audit-lens.git
 
-# Install as a user-scoped plugin (available in all projects)
-claude plugin install ./auditlens --user
-
-# Or project-scoped (shared with team via git)
-claude plugin install ./auditlens --project
+cp -r audit-lens/skills/auditlens ~/.claude/skills/
 ```
 
 Once installed, the skill is available as:
@@ -55,7 +51,7 @@ You should see `auditlens` in the list.
 
 ```bash
 # If published to the skills registry
-npx skills add https://github.com/AdhithyaR/auditlens
+npx skills add https://github.com/adhit-r/audit-lens
 ```
 
 ## Method 5: Cowork
