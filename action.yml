@@ -1,0 +1,30 @@
+name: 'AuditLens Continuous Compliance'
+description: 'Automatically scan pull requests for compliance gaps and post an impact report.'
+branding:
+  icon: 'shield'
+  color: 'indigo'
+
+inputs:
+  evidence_dir:
+    description: 'Path to the directory containing evidence documents'
+    required: true
+    default: '.'
+  framework:
+    description: 'Target compliance framework (iso27001 or soc2)'
+    required: true
+    default: 'iso27001'
+  github_token:
+    description: 'GitHub token to post PR comments'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Run AuditLens Scanner
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github_token }}
+      run: |
+        python3 ${GITHUB_ACTION_PATH}/skills/auditlens/scripts/github_action_runner.py \
+          --input-dir "${{ inputs.evidence_dir }}" \
+          --framework "${{ inputs.framework }}"
