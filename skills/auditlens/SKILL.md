@@ -1,41 +1,21 @@
 ---
 name: auditlens
-description: "Analyze documents, files, folders, or data sources against compliance frameworks (ISO 27001, SOC 2 Type II, HIPAA, GDPR, NIST CSF, PCI DSS, SOX, FedRAMP) and generate audit-ready outputs. Use this skill whenever a user mentions compliance, audit, certification, evidence collection, gap analysis, control mapping, framework assessment, audit readiness, regulatory requirements, or asks to organize documents for any security/privacy certification. Also trigger when users upload policy documents, security procedures, HR records, or IT documentation and want to know how it maps to compliance controls. Trigger even for adjacent requests like 'check if we're SOC 2 ready', 'what's missing for ISO', 'organize these for our auditor', 'map controls across frameworks', or 'help me prep for an audit'. This skill is the go-to for anything GRC (Governance, Risk, and Compliance) related."
+description: "Cross-platform GRC engine for automated audit readiness and gap analysis. Maps organizational evidence to ISO 27001, SOC 2, HIPAA, and NIST CSF. Provides automated classification, maturity scoring, and interactive audit workspaces with local privacy guardrails."
 ---
 
 # AuditLens — Enterprise Compliance Analysis Engine
 
 An intelligent compliance analysis engine that reads organizational documents, maps them to regulatory frameworks, identifies gaps, scores maturity, and produces an interactive audit workspace.
 
-## MANDATORY: Privacy Guardrail Check (Run First, Every Time)
+## 🛡️ Privacy & Data Security
 
-Before processing ANY compliance documents, read `references/privacy_guardrails.md` and run the pre-flight privacy check. This is non-negotiable — compliance evidence is among the most sensitive data an organization possesses.
+Mandatory check: Refer to `references/privacy_guardrails.md` before processing evidence.
 
-### Quick Pre-Flight
-1. Detect the deployment context (consumer vs commercial plan)
-2. Check if model training is enabled (CRITICAL risk if ON)
-3. Check if session is Incognito
-4. Display the privacy status banner to the user
-5. If consumer plan with training ON → display WARNING, recommend Incognito or opt-out, ask for explicit confirmation before proceeding
-6. Ask the user what sensitivity class their documents fall into (Critical/High/Medium/Low)
-7. Adjust data handling behavior accordingly
-
-### Data Handling Principles
-- Summarize and classify documents — never echo back full policy text
-- Prefer running local Python scripts over sending raw content through conversation
-- Redact PII/PHI before processing (emails, SSNs, phone numbers, IP addresses)
-- After the session, remind the user to delete the conversation if on a consumer plan
-- Include "CONFIDENTIAL" headers on all exported reports
-- Never store credentials, tokens, or secrets
-
-### Enterprise Deployment Recommendation
-For production compliance work, recommend:
-- **Best**: Claude for Work Enterprise with Zero Data Retention (ZDR)
-- **Good**: Anthropic API under Commercial Terms (no training, 30-day retention)
-- **Minimum**: Claude Pro/Max with training OFF + Incognito mode
-- **Not recommended**: Any consumer plan with training enabled
-
-See `references/privacy_guardrails.md` for the full privacy architecture, sensitivity classes, and deployment decision matrix.
+### Pre-Flight Protocol
+- **Detection**: Identify deployment tier (Enterprise/Commercial/Consumer).
+- **Safety**: Flag if model training is enabled; recommend Incognito for consumer plans.
+- **Classification**: Assign sensitivity tier (Critical/High/Medium/Low).
+- **Redaction**: Execute local PII/PHI scrubbing before document ingestion.
 
 ## Enterprise Connectors
 

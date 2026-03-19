@@ -1,6 +1,6 @@
 # 🔍 AuditLens
 
-**Enterprise GRC compliance engine for AI coding assistants.**
+**Hardware-accelerated GRC & Compliance Intelligence for AI Agents.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Plugin-blueviolet)](https://code.claude.com)
@@ -8,16 +8,14 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 [![GitHub Stars](https://img.shields.io/github/stars/adhit-r/audit-lens.svg?style=social)](https://github.com/adhit-r/audit-lens/stargazers)
 
-AuditLens gives your AI agent a "compliance lens" into your infrastructure. Scan your evidence against ISO 27001, SOC 2, HIPAA, NIST CSF, PCI DSS — get gap analysis, maturity scoring, cross-framework mapping, vendor risk scoring, and a premium interactive audit workspace.
+AuditLens provides a technical infrastructure for automating GRC (Governance, Risk, and Compliance) workflows. It maps organizational evidence to high-fidelity control sets—ISO 27001, SOC 2, HIPAA, and NIST CSF—delivering automated gap analysis, maturity scoring, and interactive audit workspaces.
 
-## 🌟 Why AuditLens?
+## ⚡️ Key Advantages
 
-Traditional compliance is slow, manual, and disconnected from your codebase. AuditLens changes this:
-
-- **AI-Native GRC**: Built from the ground up to integrate with agents like Claude Code and Gemini.
-- **Privacy-First**: Proprietary heuristics ensure sensitive data (PII/PHI) never leaves your environment.
-- **Map Once, Comply Many**: Our master crosswalk maps one piece of evidence across 5+ frameworks simultaneously.
-- **Actionable Gap Analysis**: Don't just find gaps — get the exact remediation steps and effort estimates.
+- **Integrated GRC**: Native execution within Claude Code, Gemini, and ChatGPT.
+- **Privacy-First Heuristics**: Localized PII/PHI detection and redaction; no sensitive data exfiltration.
+- **Unified Crosswalk**: Single-evidence mapping across 5+ frameworks simultaneously.
+- **Deterministic Analysis**: Data-driven gap identification with remediation effort estimates.
 
 > Works with Claude Code, Claude.ai, Cowork, and any agent supporting the SKILL.md open standard.
 
