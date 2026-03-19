@@ -48,16 +48,14 @@ command -v m365 >/dev/null 2>&1 && echo "M365 available"
 
 If neither CLI is available, fall back to Claude MCP connectors or direct file uploads.
 
-## When This Skill Activates
+## 🛠️ Core Capabilities
 
-This skill handles 6 core workflows + 12 advanced capabilities:
-
-1. **Evidence Catalog** — Scan files/folders, classify each document by control domain, tag with applicable frameworks
-2. **Gap Analysis** — Compare cataloged evidence against a chosen framework's full control set, surface what's missing
-3. **Cross-Framework Mapping** — Show how one control satisfies multiple frameworks simultaneously (the "map once, comply many" pattern)
-4. **Maturity Scoring** — Rate each control area on a 1-5 maturity scale based on evidence quality and coverage
-5. **Audit Workspace** — Generate an interactive HTML viewer where auditors can navigate controls, review evidence, and leave comments
-6. **Risk-Prioritized Remediation Plan** — Turn gaps into a prioritized action list with effort estimates
+1. **Evidence Cataloging**: Automated classification of documents by control domain and framework tagging.
+2. **Gap Analysis**: Comparison of evidence against target controls; status: Evidenced, Weak, Missing, or Stale.
+3. **Cross-Framework Mapping**: Unified mapping to satisfy multiple regulatory requirements with single artifacts.
+4. **Maturity Scoring**: CMMI-aligned 1-5 rating based on procedural depth and execution evidence.
+5. **Audit Workspace**: Generation of an interactive, self-contained HTML environment for auditor review.
+6. **Remediation Roadmap**: Prioritized action items with effort-impact matrix.
 
 ## Step 0: Read Framework References and Connector Docs
 
@@ -275,12 +273,12 @@ Track complete lifecycle: who created, reviewed, approved each artifact. Version
 ### 6l. Automated Vendor Security Scoring
 Ingest SIG/CAIQ questionnaires, score vendor posture, map vendor controls against org framework requirements, generate risk tiering.
 
-## Output Quality Rules
+## 💎 Execution Standards
 
-1. Never fabricate evidence — if a document doesn't address a control, say so
-2. Be specific in gap descriptions — "Missing encryption policy" not just "Gap in A.8"
-3. Always include remediation actions — gaps without next steps are useless
-4. Date everything — evidence is time-sensitive
-5. Use the organization's own language when possible — mirror terms from their documents
-6. Flag ambiguity — if a document partially covers a control, say what's covered and what's not
-7. Cross-reference aggressively — one document often maps to 5-10 controls across frameworks
+1. **Strict Veracity**: Never hallucinate evidence. If a requirement is unmet, mark as a High-Risk Gap.
+2. **Technical Precision**: Provide exact control IDs and specific remediation tasks.
+3. **Maturity Objectivity**: Score based on observable evidence, not subjective intent.
+4. **Temporal Context**: Every finding must include a timestamp and version reference.
+5. **Terminology Alignment**: Adapt to organizational nomenclature found in source documents.
+6. **Granular Mapping**: Explicitly state which paragraphs in which files satisfy specific control criteria.
+7. **Efficiency**: Use local processing (`classify_evidence.py`) for large datasets to minimize token overhead.

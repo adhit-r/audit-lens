@@ -1,16 +1,13 @@
-# Antigravity Integration for AuditLens
+# Antigravity Integration
 
-Antigravity natively supports the `SKILL.md` standard. To use AuditLens with Antigravity:
-
-1. **Local Skill Loading**:
-   Copy the `skills/auditlens` directory to your project's `.claude/skills/` folder.
+### Configuration
+1. **Local Skill**:
    ```bash
    cp -r skills/auditlens .claude/skills/
    ```
 
-2. **System Prompt Alignment**:
-   You can also provide this context to Antigravity in your session:
-   "I am using the AuditLens GRC engine. Please refer to `skills/auditlens/SKILL.md` for our compliance workflows, privacy guardrails, and available scripts for document classification and gap analysis."
+2. **Context**:
+   Reference `skills/auditlens/SKILL.md` for compliance workflows and privacy protocols.
 
-3. **Direct Execution**:
-   Antigravity can run the Python scripts in `skills/auditlens/scripts/` directly to perform high-fidelity analysis without sending sensitive document contents to the model.
+### Execution
+Use `skills/auditlens/scripts/` for data-intensive classification and gap analysis.
