@@ -2,31 +2,14 @@
 .DS_Store
 Thumbs.db
 
-# Python
+# Python (legacy)
 __pycache__/
-*.py[cod]
-*.egg-info/
-dist/
-build/
-.venv/
-venv/
+*.pyc
 
-# Working data (never commit compliance evidence)
+# Generated outputs
 evidence_catalog.json
-provenance.json
-vendor_assessment.json
-*.assessment.json
-compliance-workspace/
+auditlens-data-room.zip
 
 # IDE
 .vscode/
 .idea/
-*.swp
-*.swo
-
-# Environment
-.env
-.env.local
-
-# Outputs
-*.skill

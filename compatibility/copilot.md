@@ -1,16 +1,33 @@
-# GitHub Copilot (Codex)
+# GitHub Copilot Integration
 
-### Configuration
-Update `.github/copilot-instructions.md`:
+### Setup
+
+Add the following to `.github/copilot-instructions.md`:
 
 ```markdown
-## AuditLens GRC Context
-- Core Logic: `skills/auditlens/scripts/`
-- Frameworks: `skills/auditlens/references/`
-- Privacy: `skills/auditlens/references/privacy_guardrails.md`
+## AuditLens Compliance Context
 
-Rules:
-1. Reference `skills/auditlens/references/` for control sets.
-2. Use `scripts/classify_evidence.py` for document processing.
-3. Adhere to `privacy_guardrails.md` for PII/PHI handling.
+This project uses AuditLens for compliance analysis.
+- Framework references: `skill/references/`
+- Privacy guardrails: `skill/references/privacy_guardrails.md`
+- Audit viewer template: `skill/assets/audit_viewer_template.html`
+
+When asked about compliance, audit readiness, or gap analysis:
+1. Read the relevant framework reference files before analysis
+2. Follow the workflow in `skill/SKILL.md`
+3. Adhere strictly to `privacy_guardrails.md` for PII/PHI handling
+```
+
+Then copy the skill into your project:
+
+```bash
+cp -r skill/ ./skill/
+```
+
+### Usage
+
+```
+"Check our compliance posture against ISO 27001"
+"Review this PR for compliance impact"
+"What policies are we missing for SOC 2?"
 ```

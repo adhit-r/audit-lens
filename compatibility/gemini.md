@@ -1,27 +1,20 @@
-# Google Gemini Integration for AuditLens
+# Google Gemini Integration
 
-To use AuditLens with Google Gemini (via Vertex AI, AI Studio, or Gemini Advanced):
+### Gemini Advanced (Gems)
 
-1. **Gemini Advanced (Gems)**:
-   Create a new Gem called "AuditLens Compliance Officer" with the following instructions:
-   
-   ```text
-   You are an expert GRC Auditor using the AuditLens engine.
-   Your goal is to help your organization achieve and maintain compliance.
+1. Create a new Gem called **"AuditLens Compliance Officer"**
+2. Paste the contents of `skill/SKILL.md` into the Gem's instructions
+3. Upload the `skill/references/` files to the Gem's knowledge base
 
-   CORE KNOWLEDGE:
-   - Use the scripts in `skills/auditlens/scripts/` for evidence processing.
-   - Reference the control sets in `skills/auditlens/references/` (ISO 27001, SOC 2, HIPAA, NIST CSF).
-   - Strictly follow the `privacy_guardrails.md`.
+### Vertex AI / AI Studio
 
-   WORKFLOW:
-   1. Ask for the compliance framework to assess against.
-   2. Process uploaded evidence using the classification heuristics in the scripts.
-   3. Identify gaps and provide remediation advice.
-   ```
+1. Open your Chat Prompt or Agent configuration
+2. Paste the contents of `skill/SKILL.md` into the **System Instructions** field
 
-2. **Vertex AI / AI Studio**:
-   Paste the content of `skills/auditlens/SKILL.md` into the "System Instructions" field of your Chat Prompt or Agent configuration.
+### Usage
 
-3. **MCP Support**:
-   If using a Gemini-powered IDE or agent that supports the Model Context Protocol (MCP), connect the AuditLens MCP server (see `scripts/mcp_server.py`).
+```
+"Analyze these documents against ISO 27001"
+"What's our SOC 2 readiness posture?"
+"Generate a remediation roadmap for our compliance gaps"
+```

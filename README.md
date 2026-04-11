@@ -1,18 +1,17 @@
 <div align="center">
-  <img src="skills/auditlens/assets/logo.png" width="160" height="160" alt="AuditLens Logo">
+  <img src="skill/assets/logo.png" width="160" height="160" alt="AuditLens Logo">
   <h1>AuditLens</h1>
-  <p>The impeccable, agentic compliance engine.</p>
+  <p>The agentic compliance engine.</p>
   
   <p>
     <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
     <a href="CONTRIBUTING.md"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome"></a>
-    <a href="skills/auditlens/scripts/mcp_server.py"><img src="https://img.shields.io/badge/MCP-Server-indigo.svg" alt="MCP Support"></a>
   </p>
   
   <p align="center">
-    <a href="#key-features">Key Features</a> •
-    <a href="#interactive-workspace">Interactive Workspace</a> •
-    <a href="#installation">Installation</a> •
+    <a href="#quick-start">Quick Start</a> •
+    <a href="#how-it-works">How It Works</a> •
+    <a href="#supported-frameworks">Frameworks</a> •
     <a href="#multi-agent-support">Multi-Agent</a> •
     <a href="CONTRIBUTING.md">Contributing</a>
   </p>
@@ -20,58 +19,128 @@
 
 ---
 
-## Technical Excellence in Compliance
+## What is AuditLens?
 
-Traditional compliance audits are manual, fragmented, and slow. AuditLens transforms your raw evidence directory into a production-grade, interactive audit workspace using agentic AI. 
+AuditLens is an **agent skill** — expert instructions and framework references that turn any AI agent into a precision compliance auditor.
 
-It is designed as a precision instrument for audit readiness—built with a commitment to veracity, velocity, and impeccable design.
+No keyword matching. No heuristics. Your AI agent reads your documents, reasons about their content against regulatory frameworks, and produces auditor-grade gap analysis, maturity scoring, and interactive audit workspaces.
 
-## Key Features
+## Quick Start
 
-- **Agentic Intelligence**: Classifies documentation, maps controls, and tracks provenance automatically using advanced LLM reasoning.
-- **Impeccable Design**: A premium, editorial-grade interactive workspace powered by OKLCH color spaces and fluid responsive design.
-- **Compliance Crosswalks**: Native support for ISO 27001, SOC 2, HIPAA, and NIST CSF.
-- **Multi-Agent Architecture**: Direct integration for Antigravity, Gemini, Codex, and ChatGPT via a standard MCP server.
-- **Truth-First Reporting**: Eliminates conversational filler and generic phrasing. Generates technically precise and accurate findings.
+### Claude Code
 
-## Interactive Workspace
-
-AuditLens generates a self-contained, portable HTML workspace that represents your entire audit posture. It prioritizes information architecture over generic templates, ensuring a seamless experience for professional auditors.
-
-> [!NOTE]
-> **Live Demonstration**: [adhit-r.github.io/audit-lens](https://adhit-r.github.io/audit-lens)
-
-## Installation
-
-AuditLens can be deployed via the Claude Code plugin or directly through the command line.
-
-### Option 1: Claude Code
 ```bash
 /plugin marketplace add adhit-r/audit-lens
 ```
 
-### Option 2: Binary Setup
+### Any Other Agent
+
 ```bash
 git clone https://github.com/adhit-r/audit-lens.git
-cd audit-lens
-# Refer to INSTALL.md for agent-specific configuration
 ```
 
-## Multi-Agent Compatibility
+Then copy `skill/` into your agent's skill directory. See [Multi-Agent Support](#multi-agent-support) for platform-specific paths.
 
-AuditLens serves as a specialized compliance layer for diverse AI agents. Detailed integration guides are available for supported platforms:
+### Start Auditing
 
-- [Antigravity Integration](compatibility/antigravity.md)
-- [Gemini Integration](compatibility/gemini.md)
-- [Codex Integration](compatibility/codex.md)
-- [ChatGPT Integration](compatibility/chatgpt.md)
+Once installed, ask your agent:
 
-## Community and Contributions
+```
+"Audit my evidence folder against ISO 27001"
+"Check our SOC 2 readiness"
+"Score this vendor's SIG questionnaire"
+```
 
-We are defining the future of automated compliance reporting.
+## How It Works
 
-- **Support the Project**: If you find AuditLens valuable, consider starring the repository to increase visibility within the security community.
-- **Development**: Comprehensive guidelines are available in our [Contributing Guide](CONTRIBUTING.md).
+AuditLens is **not a standalone tool** — it's intelligence that lives inside your AI agent.
+
+```
+┌────────────┐     ┌─────────────────────┐     ┌──────────────┐
+│ Your Docs  │ ──→ │ AI Agent + AuditLens│ ──→ │ Audit Report │
+│ (evidence) │     │ (reads & reasons)   │     │ (HTML/JSON)  │
+└────────────┘     └─────────────────────┘     └──────────────┘
+```
+
+The agent:
+1. **Reads** your organizational documents (policies, procedures, logs, configs)
+2. **References** the framework control catalogs (ISO 27001, SOC 2, etc.)
+3. **Maps** each document to specific controls with evidence strength ratings
+4. **Identifies gaps** — controls with missing, weak, or stale evidence
+5. **Scores maturity** — CMMI-aligned 1-5 per control domain
+6. **Generates** an interactive audit workspace (self-contained HTML)
+
+## Supported Frameworks
+
+| Framework | Controls | Reference |
+|-----------|----------|-----------|
+| ISO 27001:2022 | 93 Annex A controls | `skill/references/iso27001.md` |
+| SOC 2 Type II | 61 trust service criteria | `skill/references/soc2.md` |
+| HIPAA | 46 safeguard specifications | `skill/references/hipaa.md` |
+| NIST CSF 2.0 | 22 categories | `skill/references/nist_csf.md` |
+| PCI DSS v4.0 | Payment card requirements | `skill/references/pci_dss.md` |
+| GDPR | Data protection articles | `skill/references/gdpr.md` |
+
+Cross-framework mapping via `skill/references/crosswalk.md`.
+
+## Multi-Agent Support
+
+AuditLens works with any AI agent that can read files and follow instructions.
+
+| Platform | Install |
+|----------|---------|
+| **Claude Code** | `/plugin marketplace add adhit-r/audit-lens` |
+| **Antigravity** | `cp -r skill/ .agents/skills/auditlens/` |
+| **Gemini** | Paste `skill/SKILL.md` into System Instructions |
+| **ChatGPT** | Paste `skill/SKILL.md` into Custom GPT Instructions, upload `skill/references/` to Knowledge |
+| **Copilot** | Append context from `skill/SKILL.md` to `.github/copilot-instructions.md` |
+
+Detailed guides: [Antigravity](compatibility/antigravity.md) · [Gemini](compatibility/gemini.md) · [ChatGPT](compatibility/chatgpt.md) · [Copilot](compatibility/copilot.md)
+
+## Enterprise Connectors
+
+AuditLens can pull evidence directly from cloud platforms when connectors are available:
+
+- **Google Workspace** — Drive, Gmail, Calendar, Sheets via `gws` CLI
+- **Microsoft 365** — SharePoint, OneDrive, Entra ID, Purview via `m365` CLI
+
+The skill auto-detects available connectors at runtime.
+
+## GitHub Action
+
+Add compliance checks to your CI:
+
+```yaml
+- uses: adhit-r/audit-lens@v2
+  with:
+    evidence_dir: './compliance-docs'
+    framework: 'iso27001'
+```
+
+## Interactive Workspace Demo
+
+> [!NOTE]
+> **Live Demo**: [adhit-r.github.io/audit-lens](https://adhit-r.github.io/audit-lens)
+
+## Repository Structure
+
+```
+audit-lens/
+├── skill/                    ← The agent skill
+│   ├── SKILL.md              ← Agent instructions
+│   ├── references/           ← 8 framework control catalogs
+│   └── assets/               ← HTML audit workspace template
+├── .claude-plugin/           ← Claude Code plugin manifest
+├── compatibility/            ← Per-agent install guides
+├── action.yml                ← GitHub Action
+└── demo/                     ← Live demo
+```
+
+Zero code. Pure content. The agent is the intelligence.
+
+## Contributing
+
+See [Contributing Guide](CONTRIBUTING.md).
 
 ---
 

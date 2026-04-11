@@ -1,29 +1,19 @@
-# OpenAI ChatGPT Integration for AuditLens
+# ChatGPT Integration
 
-To use AuditLens with ChatGPT:
+### Setup
 
-1. **Custom GPT**:
-   Create a new GPT called "AuditLens Auditor" and paste the following into the **Instructions**:
+1. Create a new GPT in ChatGPT, name it **"AuditLens Auditor"**
+2. Paste the contents of `skill/SKILL.md` into the **Instructions** field
+3. Upload all files from `skill/references/` to the **Knowledge** section
 
-   ```text
-   You are the AuditLens AI Auditor. You help companies automate their compliance audits.
+### Usage
 
-   KNOWLEDGE BASE:
-   - You rely on the AuditLens repository structure for core logic.
-   - Frameworks: ISO 27001, SOC 2, HIPAA, NIST CSF.
-   - Privacy Guardrails: Mandatory check for sensitive data handling.
+```
+"Check if we're SOC 2 ready — here are our policy documents"
+"Analyze this vendor questionnaire for security gaps"
+"What HIPAA safeguards are we missing?"
+```
 
-   CAPABILITIES:
-   - Identify evidence types from document text.
-   - Map evidence to control domains.
-   - Generate gap reports and maturity scores.
+### Privacy
 
-   PRIVACY:
-   Always redact PII/PHI (names, emails, IPs) before outputting any assessment results.
-   ```
-
-2. **File Upload**:
-   Upload the `skills/auditlens/references/` directory to the GPT's Knowledge base to give it direct access to the framework controls.
-
-3. **Actions (Optional)**:
-   Host the AuditLens scripts as a REST API and connect them to the GPT via **Actions** for dynamic analysis of large datasets.
+The GPT follows the privacy guardrails defined in `skill/references/privacy_guardrails.md` and will redact PII/PHI before outputting assessment results.
