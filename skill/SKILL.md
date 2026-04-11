@@ -75,6 +75,7 @@ references/
 ├── iso42001.md        — ISO/IEC 42001 AI Management System (40+ controls)
 ├── eu_ai_act.md       — EU AI Act risk classification + requirements
 ├── nist_ai_rmf.md     — NIST AI RMF + AI 600-1 GenAI risk profile
+├── osa_connector.md   — Open Security Architecture: 315 NIST 800-53 controls mapped to 87 frameworks
 ├── crosswalk.md       — Cross-framework control mapping table
 ├── connectors.md      — Enterprise connector reference (gws, m365, MCP)
 ├── advanced_usecases.md — 12 novel capabilities beyond standard compliance
@@ -82,6 +83,19 @@ references/
 ```
 
 Read the relevant file(s) based on which framework(s) the user selected. If they haven't chosen yet, ask which framework(s) they need — or suggest based on their industry/context.
+
+### Multi-Framework Cascade via OSA
+
+When analyzing against ANY framework, use the OSA connector (`references/osa_connector.md`) to provide automatic cross-framework coverage:
+
+1. For each control the user satisfies, find the NIST 800-53 parent control via OSA
+2. Look up all other frameworks that map to the same NIST 800-53 control
+3. Report: "By satisfying [Control X], you also partially cover [Framework A Control Y], [Framework B Control Z], ..."
+4. Calculate aggregate coverage percentages for target frameworks
+
+This enables the **"test once, comply with 87 frameworks"** capability. Always include the OSA attribution line in outputs that use this data:
+
+> Compliance mappings sourced from [Open Security Architecture](https://www.opensecurityarchitecture.org) (CC BY-SA 4.0)
 
 ### Custom Framework Ingestion
 

@@ -2,6 +2,8 @@
 
 This crosswalk maps equivalent controls across major compliance frameworks. Use it to show organizations how satisfying one control can simultaneously address requirements in other frameworks — the "map once, comply many" principle.
 
+> **For granular per-control mappings across 87 frameworks**, use the OSA connector (`osa_connector.md`). This crosswalk provides domain-level summaries; OSA provides control-level precision via NIST 800-53 as the universal parent.
+
 ## How to Use This Crosswalk
 
 1. Find the control domain (left column)

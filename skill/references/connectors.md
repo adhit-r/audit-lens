@@ -6,8 +6,9 @@ This file documents how to connect to enterprise document sources for evidence i
 1. [Google Workspace via `gws` CLI](#gws)
 2. [Microsoft 365 via `m365` CLI](#m365)
 3. [Claude MCP Connectors](#mcp)
-4. [Local Filesystem / Uploads](#local)
-5. [Connector Detection Logic](#detection)
+4. [Open Security Architecture (OSA) API](#osa)
+5. [Local Filesystem / Uploads](#local)
+6. [Connector Detection Logic](#detection)
 
 ---
 
@@ -252,7 +253,48 @@ Pull product analytics for processing integrity evidence.
 
 ---
 
-## 4. Local Filesystem / Uploads {#local}
+## 4. Open Security Architecture (OSA) API {#osa}
+
+**Source**: [opensecurityarchitecture.org](https://www.opensecurityarchitecture.org)
+**API Docs**: [opensecurityarchitecture.org/api](https://www.opensecurityarchitecture.org/api)
+**GitHub**: [opensecurityarchitecture/osa-data](https://github.com/opensecurityarchitecture/osa-data)
+**License**: CC BY-SA 4.0
+
+OSA provides structured compliance mapping data: 315 NIST 800-53 Rev 5 controls mapped to 87 frameworks. Use this for cross-framework compliance cascade.
+
+### API Endpoints
+
+```bash
+# Get a specific control with all compliance mappings
+GET https://www.opensecurityarchitecture.org/api/controls/AC-01
+
+# Get the full control catalog
+GET https://www.opensecurityarchitecture.org/api/controls
+
+# OpenAPI specification
+GET https://www.opensecurityarchitecture.org/openapi.yaml
+```
+
+### GitHub Raw Data (Fallback when API is unavailable)
+
+```bash
+# Individual control (uppercase filenames)
+https://raw.githubusercontent.com/opensecurityarchitecture/osa-data/main/data/controls/AC-01.json
+
+# Full catalog
+https://raw.githubusercontent.com/opensecurityarchitecture/osa-data/main/data/controls/_catalog.json
+```
+
+### Usage in Compliance Workflows
+
+See `osa_connector.md` for the full integration guide including:
+- Reverse mapping: framework control → NIST 800-53 → all other frameworks
+- Framework coverage calculator
+- Attribution requirements
+
+---
+
+## 5. Local Filesystem / Uploads {#local}
 
 For files uploaded directly to the conversation or available on disk:
 
@@ -266,7 +308,7 @@ find /path/to/compliance-evidence/ -type f -name "*.pdf" -exec stat -c '%n|%s|%y
 
 ---
 
-## 5. Connector Detection Logic {#detection}
+## 6. Connector Detection Logic {#detection}
 
 At the start of every compliance audit session, detect which connectors are available:
 
