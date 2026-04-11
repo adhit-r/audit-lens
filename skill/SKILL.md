@@ -46,18 +46,34 @@ Before any analysis, detect available connectors. Read `references/connectors.md
 ```bash
 command -v gws >/dev/null 2>&1 && echo "GWS available"
 command -v m365 >/dev/null 2>&1 && echo "M365 available"
+command -v aws >/dev/null 2>&1 && echo "AWS CLI available"
+command -v gcloud >/dev/null 2>&1 && echo "GCP CLI available"
+command -v az >/dev/null 2>&1 && echo "Azure CLI available"
+command -v kubectl >/dev/null 2>&1 && echo "Kubernetes available"
 ```
 
-If neither CLI is available, fall back to MCP connectors or direct file uploads.
+If CLIs are detected, check their auth status. If none are available, fall back to MCP connectors or direct file uploads.
+
+**Ecosystem Discovery** — ask the user which tools their organization uses (see `ecosystem_connectors.md` for the full questionnaire). For each tool identified, guide the user through read-only API key setup, then auto-fetch evidence and map it to NIST 800-53 controls.
 
 ## 🛠️ Core Capabilities
 
 1. **Evidence Cataloging**: Read and classify documents by control domain and framework tagging.
-2. **Gap Analysis**: Compare evidence against target controls; status: Evidenced, Weak, Missing, or Stale.
-3. **Cross-Framework Mapping**: Unified mapping to satisfy multiple regulatory requirements with single artifacts.
-4. **Maturity Scoring**: CMMI-aligned 1-5 rating based on procedural depth and execution evidence.
-5. **Audit Workspace**: Generation of an interactive, self-contained HTML environment for auditor review.
-6. **Remediation Roadmap**: Prioritized action items with effort-impact matrix.
+2. **Auto-Evidence Collection**: Discover the organization's tool ecosystem and fetch evidence directly from SaaS APIs (see `ecosystem_connectors.md`).
+3. **Gap Analysis**: Compare evidence against target controls; status: Evidenced, Weak, Missing, or Stale.
+4. **Cross-Framework Mapping**: Unified mapping to satisfy multiple regulatory requirements with single artifacts.
+5. **Multi-Framework Cascade**: Via OSA connector, automatically cascade coverage from one framework to 87 others.
+6. **Maturity Scoring**: CMMI-aligned 1-5 rating based on procedural depth and execution evidence.
+7. **Audit Workspace**: Generation of an interactive, self-contained HTML environment for auditor review.
+8. **Remediation Roadmap**: Prioritized action items with effort-impact matrix.
+
+### Evidence Classification
+All evidence is classified by strength:
+- **Primary (🟢 P)**: Directly proves control effectiveness. System-generated, tamper-resistant.
+- **Corroborating (🔵 C)**: Supports primary evidence from a second independent source.
+- **Supplementary (⚪ S)**: Adds context but cannot standalone. Policies, org charts, training slides.
+
+Every control needs **at least 1 Primary** evidence to be marked "Evidenced". See `ecosystem_connectors.md` for the full evidence classification system and IPE validation rules.
 
 ## Step 0: Read Framework References
 
@@ -78,6 +94,7 @@ references/
 ├── osa_connector.md   — Open Security Architecture: 315 NIST 800-53 controls mapped to 87 frameworks
 ├── crosswalk.md       — Cross-framework control mapping table
 ├── connectors.md      — Enterprise connector reference (gws, m365, MCP)
+├── ecosystem_connectors.md — Auto-evidence collection: 50+ SaaS tools mapped to NIST 800-53
 ├── advanced_usecases.md — 12 novel capabilities beyond standard compliance
 ├── privacy_guardrails.md — Mandatory privacy and data handling rules
 ```
