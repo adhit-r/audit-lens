@@ -72,6 +72,9 @@ references/
 ├── gdpr.md            — GDPR Articles mapped to controls
 ├── nist_csf.md        — NIST CSF 2.0 categories (22 categories)
 ├── pci_dss.md         — PCI DSS v4.0 requirements
+├── iso42001.md        — ISO/IEC 42001 AI Management System (40+ controls)
+├── eu_ai_act.md       — EU AI Act risk classification + requirements
+├── nist_ai_rmf.md     — NIST AI RMF + AI 600-1 GenAI risk profile
 ├── crosswalk.md       — Cross-framework control mapping table
 ├── connectors.md      — Enterprise connector reference (gws, m365, MCP)
 ├── advanced_usecases.md — 12 novel capabilities beyond standard compliance
@@ -79,6 +82,41 @@ references/
 ```
 
 Read the relevant file(s) based on which framework(s) the user selected. If they haven't chosen yet, ask which framework(s) they need — or suggest based on their industry/context.
+
+### Custom Framework Ingestion
+
+If the user provides their own framework (internal policies, industry standards, client requirements, or any standard not in the references), ingest it directly. Accept any of these formats:
+
+- **Markdown** with control IDs, names, and descriptions
+- **CSV/XLSX** with columns for control ID, name, description, category
+- **PDF/DOCX** containing a control catalog — extract and structure it
+- **JSON** with a controls array
+
+Normalize it into this internal structure for analysis:
+
+```json
+{
+  "framework_name": "[User's Framework]",
+  "version": "[Version if provided]",
+  "domains": [
+    {
+      "domain_id": "D1",
+      "domain_name": "[Domain Name]",
+      "controls": [
+        {
+          "control_id": "D1.1",
+          "control_name": "[Control Name]",
+          "description": "[What this control requires]",
+          "evidence_examples": ["[What would satisfy this control]"],
+          "risk_level": "high"
+        }
+      ]
+    }
+  ]
+}
+```
+
+Then proceed with Steps 1–4 using this custom framework as the target. All outputs (gap analysis, maturity scoring, audit workspace) work identically for custom frameworks.
 
 ## Step 1: Ingest and Classify Documents
 
@@ -239,8 +277,80 @@ Produce a timeline showing:
 ### 5d. Vendor/Third-Party Risk Mapping
 If the user uploads vendor questionnaires or SIG responses, map vendor controls against the organization's framework requirements and flag coverage gaps in the supply chain.
 
-### 5e. Policy Generation from Gaps
-For critical gaps where no policy exists, draft a comprehensive starter policy document that addresses the control requirements. Use professional formatting and industry-standard language.
+### 5e. Evidence Generation from Gaps
+
+When gaps are identified, generate the missing evidence artifacts. Each generated document should be 80% ready for an auditor — professional, comprehensive, and requiring only org-specific details to be filled in.
+
+| Gap Type | Generated Artifact |
+|----------|-------------------|
+| Missing policy | Full policy document with scope, objectives, roles, procedures, review schedule |
+| Missing procedure | Step-by-step SOP with role assignments, decision criteria, escalation paths |
+| Missing risk assessment | Risk register with threats, likelihood, impact, existing controls, residual risk |
+| Missing training record | Training plan with topics, audience, frequency, assessment criteria |
+| Missing vendor assessment | Vendor questionnaire mapped to the framework's third-party requirements |
+| Missing access review | Access review template with user categories, review frequency, approval workflow |
+| Missing incident response plan | IR playbook with phases (prepare, detect, contain, eradicate, recover, lessons learned) |
+| Missing business continuity plan | BCP template with RTO/RPO targets, recovery procedures, contact lists |
+| Missing data classification policy | Classification scheme with handling requirements per tier |
+
+Format generated evidence as Markdown. Include placeholder markers `[ORG-SPECIFIC]` where the user needs to fill in organization-specific details.
+
+### 5f. Remediation Task Board
+
+After gap analysis, produce a structured remediation plan:
+
+```json
+{
+  "remediation_plan": {
+    "generated_date": "2026-04-11",
+    "framework": "ISO 27001:2022",
+    "total_tasks": 14,
+    "summary": {
+      "critical": 3,
+      "high": 5,
+      "medium": 4,
+      "low": 2
+    },
+    "tasks": [
+      {
+        "id": "REM-001",
+        "control_id": "A.8.15",
+        "control_name": "Logging",
+        "priority": "critical",
+        "status": "open",
+        "task": "Implement centralized log management covering all production systems",
+        "acceptance_criteria": [
+          "Logs retained for 12+ months",
+          "Tamper-evident storage",
+          "Alerting on security events within 15 minutes"
+        ],
+        "effort": "moderate",
+        "suggested_owner": "Infrastructure Team",
+        "due_date_suggestion": "2026-05-15",
+        "evidence_needed": [
+          "Log management policy",
+          "Architecture diagram showing log flow",
+          "Sample log export with retention proof"
+        ],
+        "cross_framework_impact": ["SOC 2 CC7.2", "HIPAA §164.312(b)"]
+      }
+    ]
+  }
+}
+```
+
+Save this as `remediation_plan.json`. This can be injected into the HTML audit workspace for visual task tracking.
+
+### 5g. Compliance Calendar
+
+Generate a 12-month compliance calendar based on selected frameworks:
+
+| Cadence | Activities |
+|---------|------------|
+| Monthly | Access reviews, vulnerability scans, incident report review, policy exception reviews |
+| Quarterly | Risk assessment updates, security awareness metrics, board risk reporting, vendor reassessment check |
+| Semi-annual | Penetration testing, BCP/DR testing, policy refresh cycle |
+| Annual | Full audit cycle, management review, comprehensive training refresh, vendor re-certification |
 
 ## Step 6: Advanced Capabilities
 
