@@ -1,7 +1,7 @@
 <div align="center">
   <img src="skill/assets/logo.png" width="160" height="160" alt="AuditLens Logo">
   <h1>AuditLens</h1>
-  <p>The agentic compliance engine.</p>
+  <p>The enterprise agentic compliance engine.</p>
   
   <p>
     <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
@@ -11,8 +11,8 @@
   <p align="center">
     <a href="#quick-start">Quick Start</a> •
     <a href="#how-it-works">How It Works</a> •
-    <a href="#supported-frameworks">Frameworks</a> •
-    <a href="#multi-agent-support">Multi-Agent</a> •
+    <a href="#v2-enterprise-capabilities">Features</a> •
+    <a href="#multi-agent-support">Install</a> •
     <a href="CONTRIBUTING.md">Contributing</a>
   </p>
 </div>
@@ -21,9 +21,9 @@
 
 ## What is AuditLens?
 
-AuditLens is an **agent skill** — expert instructions and framework references that turn any AI agent into a precision compliance auditor.
+AuditLens is an **agent skill** — expert instructions, policy templates, and framework references that turn any AI agent into a precision compliance auditor and active remediation engine.
 
-No keyword matching. No heuristics. Your AI agent reads your documents, reasons about their content against regulatory frameworks, and produces auditor-grade gap analysis, maturity scoring, and interactive audit workspaces.
+No keyword matching. No heuristics. Your AI agent reads your documents, reasons about their content against regulatory frameworks, automatically drafts missing policies, and produces auditor-grade HTML workspaces.
 
 ## Quick Start
 
@@ -53,22 +53,39 @@ Once installed, ask your agent:
 
 ## How It Works
 
-AuditLens is **not a standalone tool** — it's intelligence that lives inside your AI agent.
+AuditLens is **not a standalone tool** — it's pure intelligence that lives inside your AI agent.
 
 ```
-┌────────────┐     ┌─────────────────────┐     ┌──────────────┐
-│ Your Docs  │ ──→ │ AI Agent + AuditLens│ ──→ │ Audit Report │
-│ (evidence) │     │ (reads & reasons)   │     │ (HTML/JSON)  │
-└────────────┘     └─────────────────────┘     └──────────────┘
+┌────────────┐     ┌─────────────────────┐     ┌────────────────┐
+│ Your Docs  │ ──→ │ AI Agent + AuditLens│ ──→ │ Dual-View HTML │
+│ (evidence) │     │ (Orchestrator)      │     │ Dashboards     │
+└────────────┘     └─────────────────────┘     └────────────────┘
 ```
 
 The agent:
-1. **Reads** your organizational documents (policies, procedures, logs, configs)
-2. **References** the framework control catalogs (ISO 27001, SOC 2, etc.)
-3. **Maps** each document to specific controls with evidence strength ratings
-4. **Identifies gaps** — controls with missing, weak, or stale evidence
-5. **Scores maturity** — CMMI-aligned 1-5 per control domain
-6. **Generates** an interactive audit workspace (self-contained HTML)
+1. **Ingests** your organizational documents (policies, procedures, logs, configs).
+2. **References** the framework control catalogs (ISO 27001, SOC 2, etc.).
+3. **Maps** evidence to specific controls with strength ratings.
+4. **Identifies gaps** and **Auto-Remediates** missing policies.
+5. **Generates** two interactive audit workspaces (GRC & Auditor).
+
+## V2 Enterprise Capabilities 🚀
+
+AuditLens V2 transforms the skill from a simple gap-analyzer into a full-fledged enterprise compliance platform.
+
+### 1. Automated Remediation Engine
+When a gap is found, the agent doesn't just flag it—it writes the fix. Powered by `remediation_templates.md`, the agent automatically generates auditor-approved, contextually-injected draft policies (e.g., ISO InfoSec Policies, Incident Response Plans) ready for management signature.
+
+### 2. Open Security Architecture (OSA) Cascade
+"Test once, comply with many." AuditLens maps your evidence against the NIST-based OSA catalog, automatically cascading your compliance status across 87+ global frameworks (ISO, SOC 2, HIPAA, GDPR, DORA) simultaneously. 
+
+### 3. Dual UI Workspaces
+The agent generates two interactive, self-contained HTML files:
+* **The GRC Dashboard**: A *Vanta-styled*, high-level readiness overview for executives and compliance teams.
+* **The Auditor Workspace**: An *Overdrive-enhanced*, brutalist data-matrix for external auditors featuring View Transitions and deep-dive JSON payloads.
+
+### 4. Ecosystem Auto-Discovery
+AuditLens understands modern SaaS stacks. It maps over 50+ integrations (AWS, Okta, GitHub, Datadog) directly to specific control requirements via the `ecosystem_connectors.md` reference.
 
 ## Supported Frameworks
 
@@ -81,8 +98,6 @@ The agent:
 | PCI DSS v4.0 | Payment card requirements | `skill/references/pci_dss.md` |
 | GDPR | Data protection articles | `skill/references/gdpr.md` |
 
-Cross-framework mapping via `skill/references/crosswalk.md`.
-
 ## Multi-Agent Support
 
 AuditLens works with any AI agent that can read files and follow instructions.
@@ -92,35 +107,10 @@ AuditLens works with any AI agent that can read files and follow instructions.
 | **Claude Code** | `/plugin marketplace add adhit-r/audit-lens` |
 | **Antigravity** | `cp -r skill/ .agents/skills/auditlens/` |
 | **Gemini** | Paste `skill/SKILL.md` into System Instructions |
-| **ChatGPT** | Paste `skill/SKILL.md` into Custom GPT Instructions, upload `skill/references/` to Knowledge |
+| **ChatGPT** | Paste `skill/SKILL.md` into Custom GPT, upload `skill/references/` |
 | **Copilot** | Append context from `skill/SKILL.md` to `.github/copilot-instructions.md` |
 
 Detailed guides: [Antigravity](compatibility/antigravity.md) · [Gemini](compatibility/gemini.md) · [ChatGPT](compatibility/chatgpt.md) · [Copilot](compatibility/copilot.md)
-
-## Enterprise Connectors
-
-AuditLens can pull evidence directly from cloud platforms when connectors are available:
-
-- **Google Workspace** — Drive, Gmail, Calendar, Sheets via `gws` CLI
-- **Microsoft 365** — SharePoint, OneDrive, Entra ID, Purview via `m365` CLI
-
-The skill auto-detects available connectors at runtime.
-
-## GitHub Action
-
-Add compliance checks to your CI:
-
-```yaml
-- uses: adhit-r/audit-lens@v2
-  with:
-    evidence_dir: './compliance-docs'
-    framework: 'iso27001'
-```
-
-## Interactive Workspace Demo
-
-> [!NOTE]
-> **Live Demo**: [adhit-r.github.io/audit-lens](https://adhit-r.github.io/audit-lens)
 
 ## Repository Structure
 
@@ -128,12 +118,15 @@ Add compliance checks to your CI:
 audit-lens/
 ├── skill/                    ← The agent skill
 │   ├── SKILL.md              ← Agent instructions
-│   ├── references/           ← 8 framework control catalogs
-│   └── assets/               ← HTML audit workspace template
-├── .claude-plugin/           ← Claude Code plugin manifest
+│   ├── references/           ← Framework catalogs & Ecosystem/OSA mappings
+│   │   ├── remediation_templates.md  ← Boilerplates for Auto-Remediation
+│   │   ├── ecosystem_connectors.md   ← SaaS mapping logic
+│   │   └── ... framework definitions
+│   └── assets/               
+│       ├── grc_viewer_template.html     ← Executive Dashboard UI
+│       └── auditor_viewer_template.html ← Deep-Dive Matrix UI
 ├── compatibility/            ← Per-agent install guides
-├── action.yml                ← GitHub Action
-└── demo/                     ← Live demo
+└── demo/                     ← Synthetic test environment (Acme Corp)
 ```
 
 Zero code. Pure content. The agent is the intelligence.

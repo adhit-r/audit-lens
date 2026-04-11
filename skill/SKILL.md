@@ -264,25 +264,18 @@ Structure:
 - Remediation roadmap
 - Appendix: Full evidence catalog
 
-### B. Interactive Audit Workspace (HTML)
-This is the flagship output. Use the template in `assets/audit_viewer_template.html` as the base.
+### B. Interactive Audit Workspaces (HTML)
+This is the flagship output. You must generate TWO self-contained HTML files based on the templates in `assets/`:
 
-The audit workspace provides:
-- **Framework navigator** — sidebar with all control domains, color-coded by status
-- **Control detail panel** — shows control description, mapped evidence, gap status
-- **Evidence viewer** — click any evidence item to see summary and key excerpts
-- **Cross-framework view** — toggle to see how controls map across frameworks
-- **Comment system** — auditors can add notes per control (persisted in localStorage)
-- **Export** — download the full assessment as JSON or generate a PDF summary
-- **Filter bar** — filter by status (gap/evidenced/stale), risk level, domain
-- **Maturity dashboard** — radar chart showing maturity scores per domain
+1. **GRC Dashboard (`output/<company>_grc_dashboard.html`)**
+   - Use `assets/grc_viewer_template.html` as the base.
+   - Vanta-style, high-level readiness overview for internally tracking compliance health.
+   - Inject the assessment data (evidence catalog + gap analysis + maturity scores) directly into the HTML as a JSON object `window.ASSESSMENT_DATA`.
 
-Build this as a self-contained HTML file with embedded CSS and JS. Use:
-- Tailwind via CDN for layout
-- Chart.js via CDN for the maturity radar chart
-- Clean, professional aesthetic — muted color palette with status accents
-
-Inject the assessment data (evidence catalog + gap analysis + maturity scores) directly into the HTML as a JSON object so the file is fully self-contained and portable.
+2. **Auditor Workspace (`output/<company>_auditor_workspace.html`)**
+   - Use `assets/auditor_viewer_template.html` as the base.
+   - Overdrive-enhanced, brutalist data-matrix style designed for deep-dive verification by external auditors.
+   - Inject the exact same `window.ASSESSMENT_DATA` JSON object into the HTML.
 
 ### C. Remediation Tracker (XLSX)
 If the user wants a spreadsheet, generate one with columns:
@@ -308,23 +301,17 @@ Produce a timeline showing:
 ### 5d. Vendor/Third-Party Risk Mapping
 If the user uploads vendor questionnaires or SIG responses, map vendor controls against the organization's framework requirements and flag coverage gaps in the supply chain.
 
-### 5e. Evidence Generation from Gaps
+### 5e. Evidence Generation from Gaps (Automated Remediation)
 
-When gaps are identified, generate the missing evidence artifacts. Each generated document should be 80% ready for an auditor — professional, comprehensive, and requiring only org-specific details to be filled in.
+When gaps are identified (e.g., missing policies or procedures), generate the missing evidence artifacts to remediate the gap. 
 
-| Gap Type | Generated Artifact |
-|----------|-------------------|
-| Missing policy | Full policy document with scope, objectives, roles, procedures, review schedule |
-| Missing procedure | Step-by-step SOP with role assignments, decision criteria, escalation paths |
-| Missing risk assessment | Risk register with threats, likelihood, impact, existing controls, residual risk |
-| Missing training record | Training plan with topics, audience, frequency, assessment criteria |
-| Missing vendor assessment | Vendor questionnaire mapped to the framework's third-party requirements |
-| Missing access review | Access review template with user categories, review frequency, approval workflow |
-| Missing incident response plan | IR playbook with phases (prepare, detect, contain, eradicate, recover, lessons learned) |
-| Missing business continuity plan | BCP template with RTO/RPO targets, recovery procedures, contact lists |
-| Missing data classification policy | Classification scheme with handling requirements per tier |
+**CRITICAL RULES FOR DRAFTING PROCEDURES:**
+1. **Always use templates**: Before drafting, read the `references/remediation_templates.md` file. You MUST use the auditor-approved templates provided there as your base structure. Do not hallucinate generic policy structures.
+2. **Contextualize with ingested data**: You learned about the organization's tech stack and context in Step 1. Intelligently replace the `<INSERT: ...>` blocks in the templates with accurate contextual details (e.g., if you know they use AWS and Okta, write those into the Access Control template).
+3. **Mandatory Governance Header**: ensure the Document Governance table is at the very top of every drafted policy.
+4. **Output Format**: Format generated evidence as Markdown and save it to the output directory (e.g., `output/remediation/draft_access_control_policy.md`).
 
-Format generated evidence as Markdown. Include placeholder markers `[ORG-SPECIFIC]` where the user needs to fill in organization-specific details.
+For gaps where an explicit template does not exist in `remediation_templates.md`, you may draft one, but it must be 80% ready for an auditor — professional, comprehensive, and following the structural rigor of the provided templates.
 
 ### 5f. Remediation Task Board
 
