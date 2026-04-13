@@ -306,7 +306,8 @@ If the user uploads vendor questionnaires or SIG responses, map vendor controls 
 When gaps are identified (e.g., missing policies or procedures), generate the missing evidence artifacts to remediate the gap. 
 
 **CRITICAL RULES FOR DRAFTING PROCEDURES:**
-1. **Always use templates**: Before drafting, read the `references/remediation_templates.md` file. You MUST use the auditor-approved templates provided there as your base structure. Do not hallucinate generic policy structures.
+1. **Query the RAG Server**: Before drafting, you MUST query the local RAG API (`http://localhost:8000/search?q=<topic>&k=3`) to retrieve "Gold Standard" real-world policy chunks from the GRC-Corpus VectorDB. Use these chunks to ensure your drafted policy mirrors industry standards.
+2. **Always use templates**: After pulling RAG context, read the `references/remediation_templates.md` file. You MUST use the auditor-approved templates provided there as your base structure. Do not hallucinate generic policy structures.
 2. **Contextualize with ingested data**: You learned about the organization's tech stack and context in Step 1. Intelligently replace the `<INSERT: ...>` blocks in the templates with accurate contextual details (e.g., if you know they use AWS and Okta, write those into the Access Control template).
 3. **Mandatory Governance Header**: ensure the Document Governance table is at the very top of every drafted policy.
 4. **Output Format**: Format generated evidence as Markdown and save it to the output directory (e.g., `output/remediation/draft_access_control_policy.md`).
