@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Auditor Workspace | OVERDRIVE</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;700;900&display=swap');
+
+  :root {
+    --bg-void: #000000;
+    --bg-surface: #0a0a0a;
+    --bg-elevated: #111111;
+    --border-hard: #222222;
+    --border-glow: #333333;
+    
+    --text-primary: #ffffff;
+    --text-dim: #888888;
+    --text-muted: #555555;
+    
+    --neon-cyan: #00f0ff;
+    --neon-amber: #ffb000;
+    --neon-red: #ff003c;
+    --neon-green: #00ff66;
+  }
+
+  body {
+    font-family: 'IBM Plex Mono', monospace;
+    background-color: var(--bg-void);
+    color: var(--text-primary);
+    margin: 0; padding: 0; height: 100vh; overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Structural Grid */
+  .matrix-layout {
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    height: 100vh;
+    border-top: 2px solid var(--neon-cyan);
+  }
+
+  header.sys-header {
+    height: 40px; border-bottom: 1px solid var(--border-hard);
+    display: flex; align-items: center; padding: 0 1rem;
+    font-size: 0.75rem; text-transform: uppercase; font-weight: 700;
+    letter-spacing: 0.1em; color: var(--text-dim);
+    background: var(--bg-surface);
+  }
+
+  /* Left Pane: Dense Control Matrix */
+  .data-matrix {
+    border-right: 1px solid var(--border-hard);
+    display: flex; flex-direction: column;
+    background: var(--bg-surface);
+  }
+  
+  .matrix-header {
+    border-bottom: 1px solid var(--border-hard);
+    padding: 1rem;
+  }
+
+  .virtual-scroll-area {
+    flex: 1; overflow-y: auto; overflow-x: hidden;
+  }
+  .virtual-scroll-area::-webkit-scrollbar { width: 4px; }
+  .virtual-scroll-area::-webkit-scrollbar-thumb { background: var(--border-hard); }
+
+  .matrix-row {
+    display: grid; grid-template-columns: 80px 1fr 20px;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border-hard);
+    cursor: pointer; transition: background 0s;
+    font-size: 0.8rem;
+  }
+  .matrix-row:hover { background: var(--border-hard); }
+  .matrix-row.selected { 
+    background: var(--bg-elevated); 
+    border-left: 2px solid var(--neon-cyan);
+    view-transition-name: active-row;
+  }
+
+  .status-dot {
+    width: 6px; height: 6px; display: inline-block; box-shadow: 0 0 8px currentColor;
+  }
+  .pass .status-dot { color: var(--neon-green); background: var(--neon-green); }
+  .weak .status-dot { color: var(--neon-amber); background: var(--neon-amber); }
+  .fail .status-dot { color: var(--neon-red); background: var(--neon-red); }
+
+  /* Right Pane: Cinematic Evidence Explorer */
+  .evidence-explorer {
+    position: relative;
+    background: radial-gradient(circle at 50% 0%, var(--bg-elevated) 0%, var(--bg-void) 100%);
+    overflow-y: auto;
+    padding: 4rem;
+  }
+
+  /* View Transitions API */
+  ::view-transition-group(root) { animation-duration: 0.4s; }
+  ::view-transition-old(detail-panel),
+  ::view-transition-new(detail-panel) {
+    animation: 0.4s cubic-bezier(0.16, 1, 0.3, 1) both slide-fade;
+  }
+  @keyframes slide-fade {
+    from { opacity: 0; transform: translateY(20px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* Detail Panel */
+  .detail-panel {
+    max-width: 1000px;
+    view-transition-name: detail-panel;
+  }
+
+  .headline-sans {
+    font-family: 'Inter', sans-serif;
+    font-weight: 900;
+    letter-spacing: -0.05em;
+    line-height: 1;
+  }
+
+  .raw-payload {
+    background: #050505;
+    border: 1px solid var(--border-hard);
+    padding: 1.5rem;
+    font-size: 0.75rem;
+    color: var(--neon-cyan);
+    overflow-x: auto;
+    white-space: pre;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+  }
+
+  .osa-chip {
+    display: inline-block; padding: 2px 6px;
+    border: 1px solid var(--text-dim); color: var(--text-dim);
+    font-size: 0.7rem; font-weight: 600; background: var(--bg-surface);
+  }
+
+</style>
+</head>
+<body>
+
+<header class="sys-header flex justify-between">
+  <div>SYSLOG // AUDITLENS OVERDRIVE v2.0.4</div>
+  <div id="sys-time" class="text-neon-cyan">LOADING...</div>
+</header>
+
+<div class="matrix-layout">
+  <!-- Left: Matrix -->
+  <aside class="data-matrix">
+    <div class="matrix-header">
+      <div class="text-[10px] font-bold text-dim mb-2 uppercase">Framework Filter</div>
+      <select id="filter-sel" class="w-full bg-black border border-border-hard text-primary py-1 px-2 text-xs outline-none focus:border-neon-cyan">
+        <option value="all">ALL_CONTROLS (*)</option>
+        <option value="missing">REQUIRE_ACTION (missing|weak)</option>
+      </select>
+    </div>
+    <div class="matrix-header py-2 flex justify-between text-[9px] text-dim font-bold border-t border-border-hard">
+      <span>REF_ID</span><span>CTRL_DESC</span><span>STS</span>
+    </div>
+    <div class="virtual-scroll-area" id="matrix-list">
+      <!-- Injected -->
+    </div>
+  </aside>
+
+  <!-- Right: Explorer -->
+  <main class="evidence-explorer hidden" id="explorer">
+    <div class="detail-panel space-y-12" id="detail-render">
+      <!-- Injected -->
+    </div>
+  </main>
+</div>
+
+<script>
+const ASSESSMENT_DATA = {"framework": "ISO 27001:2022", "scan_date": "2026-04-12", "controls": [{"id": "A.5.1", "name": "Policies for information security", "status": "evidenced", "evidence": [{"filename": "information_security_policy.md", "strength": "direct", "summary": "Core InfoSec policy"}]}, {"id": "A.5.15", "name": "Access control", "status": "evidenced", "evidence": [{"filename": "access_control_policy.md", "strength": "direct", "summary": "Provisioning limits"}, {"filename": "okta_system_log.json", "strength": "corroborating", "summary": "API logs prove SCIM deprovisioning"}]}, {"id": "A.5.21", "name": "Information security in ICT supply chain", "status": "evidenced", "evidence": [{"filename": "vendor_management_policy.md", "strength": "direct", "summary": "SIG/SOC2 requirement"}]}, {"id": "A.8.12", "name": "Data leakage prevention", "status": "evidenced", "evidence": [{"filename": "aws_security_hub.json", "strength": "corroborating", "summary": "S3 buckets encrypted and not public"}]}, {"id": "A.8.25", "name": "Secure development lifecycle", "status": "evidenced", "evidence": [{"filename": "sdlc_policy.md", "strength": "direct", "summary": "PR mandate"}, {"filename": "jira_change_tickets.json", "strength": "corroborating", "summary": "Jira tracks PR links and CAB approval"}]}, {"id": "A.8.15", "name": "Logging", "status": "evidenced", "evidence": [{"filename": "aws_security_hub.json", "strength": "direct", "summary": "CloudTrail active"}]}, {"id": "A.6.2", "name": "Terms and conditions of employment", "status": "evidenced", "evidence": [{"filename": "hr_security_policy.md", "strength": "direct", "summary": "Stipulates checks"}, {"filename": "bamboohr_employee_directory.json", "strength": "corroborating", "summary": "Active employee list tracked"}]}, {"id": "A.5.9", "name": "Inventory of information and other associated assets", "status": "missing", "description": "Inventory of all assets and their owners required.", "remediation": "Deploy Asset Tracker MDM connection."}, {"id": "A.8.20", "name": "Networks security", "status": "missing", "description": "Network configurations and firewall rules.", "remediation": "Document AWS Security Groups architecture."}], "statistics": {"total_documents": 17, "mapped_documents": 17, "control_coverage_pct": 91.5}};
+let selectedId = null;
+
+function init() {
+  setInterval(() => {
+    document.getElementById('sys-time').textContent = new Date().toISOString() + ' // ' + ASSESSMENT_DATA.framework;
+  }, 100);
+
+  document.getElementById('filter-sel').addEventListener('change', renderMatrix);
+  renderMatrix();
+}
+
+function renderMatrix() {
+  const filter = document.getElementById('filter-sel').value;
+  const list = document.getElementById('matrix-list');
+  
+  let ctrls = ASSESSMENT_DATA.controls || [];
+  if (filter === 'missing') ctrls = ctrls.filter(c => c.status !== 'evidenced');
+
+  list.innerHTML = ctrls.map(c => {
+    let cls = 'pass';
+    if(c.status === 'weak') cls = 'weak';
+    if(c.status === 'missing') cls = 'fail';
+    
+    return `
+      <div class="matrix-row ${cls} ${selectedId === c.id ? 'selected' : ''}" onclick="selectControl('${c.id}')">
+        <div class="font-bold opacity-50">${c.id}</div>
+        <div class="truncate pr-4">${c.name}</div>
+        <div class="flex items-center justify-end"><span class="status-dot"></span></div>
+      </div>
+    `;
+  }).join('');
+}
+
+function selectControl(id) {
+  selectedId = id;
+  const c = ASSESSMENT_DATA.controls.find(x => x.id === id);
+  if (!c) return;
+
+  // View Transitions API
+  if (!document.startViewTransition) {
+    updateDetailDOM(c);
+  } else {
+    document.startViewTransition(() => updateDetailDOM(c));
+  }
+}
+
+function updateDetailDOM(c) {
+  renderMatrix(); // update selection highlight
+  
+  document.getElementById('explorer').classList.remove('hidden');
+  const panel = document.getElementById('detail-render');
+  
+  let stsColor = 'text-neon-green';
+  if(c.status==='weak') stsColor = 'text-neon-amber';
+  if(c.status==='missing') stsColor = 'text-neon-red';
+
+  let rawJSON = JSON.stringify(c, null, 2);
+
+  let evidenceHTML = '';
+  if(c.evidence && c.evidence.length) {
+    evidenceHTML = c.evidence.map(e => `
+      <div class="border border-border-hard p-4 mb-4">
+        <div class="flex justify-between items-center mb-2">
+          <span class="font-bold text-sm bg-text-primary text-bg-void px-2">${e.filename}</span>
+          <span class="text-[10px] uppercase text-dim border border-dim px-1">${e.strength}</span>
+        </div>
+        <p class="text-xs text-muted leading-relaxed">${e.summary}</p>
+      </div>
+    `).join('');
+  } else {
+    evidenceHTML = '<div class="text-neon-red text-xs animate-pulse">>> NULL_POINTER: NO ARTIFACTS LOCATED</div>';
+  }
+
+  // Simulate OSA mappings based on ID
+  const frameworks = ['ISO 27001', 'NIST CSF', 'CIS v8', 'HIPAA'];
+  const mockOSA = frameworks.map(f => `<span class="osa-chip">${f}</span>`).join(' ');
+
+  panel.innerHTML = `
+    <div>
+      <div class="flex items-center gap-4 mb-4">
+        <span class="px-2 py-1 bg-border-hard text-[10px] font-bold">${c.id}</span>
+        <span class="text-[10px] font-bold uppercase ${stsColor}">SYS_STATUS: ${c.status}</span>
+      </div>
+      <h1 class="headline-sans text-5xl md:text-7xl mb-6">${c.name}</h1>
+      <p class="text-dim text-sm max-w-2xl border-l-2 border-border-hard pl-4">${c.description}</p>
+    </div>
+
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-8 pt-8 border-t border-border-hard">
+      <div>
+        <h3 class="text-[10px] uppercase text-dim font-bold mb-4">>> Verified Payloads [${c.evidence?.length || 0}]</h3>
+        ${evidenceHTML}
+      </div>
+      
+      <div>
+        <h3 class="text-[10px] uppercase text-dim font-bold mb-4">>> OSA Framework Cascade Map</h3>
+        <div class="mb-8 flex flex-wrap gap-2">${mockOSA}</div>
+
+        <h3 class="text-[10px] uppercase text-dim font-bold mb-4">>> Raw Telemetry (JSON)</h3>
+        <div class="raw-payload">${rawJSON}</div>
+        
+        ${c.remediation ? `
+          <div class="mt-8 border border-neon-amber p-4">
+            <h3 class="text-[10px] uppercase text-neon-amber font-bold mb-2">>> AUDITOR TRIGGERED ACTION</h3>
+            <p class="text-xs text-neon-amber/80">${c.remediation}</p>
+          </div>
+        ` : ''}
+      </div>
+    </div>
+  `;
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

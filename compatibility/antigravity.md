@@ -1,13 +1,23 @@
 # Antigravity Integration
 
-### Configuration
-1. **Local Skill**:
-   ```bash
-   cp -r skills/auditlens .claude/skills/
-   ```
+### Install
 
-2. **Context**:
-   Reference `skills/auditlens/SKILL.md` for compliance workflows and privacy protocols.
+```bash
+# Project-level (shared via git)
+cp -r skill/ .agents/skills/auditlens/
 
-### Execution
-Use `skills/auditlens/scripts/` for data-intensive classification and gap analysis.
+# User-level (available everywhere)
+cp -r skill/ ~/.gemini/antigravity/skills/auditlens/
+```
+
+### Usage
+
+Once installed, ask your agent:
+
+```
+"Audit my evidence folder against ISO 27001"
+"Score this vendor's SIG questionnaire"
+"What gaps do we have for SOC 2 readiness?"
+```
+
+The agent reads `SKILL.md` and the framework references automatically.
